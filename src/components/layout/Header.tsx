@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Search, Bell, User, Menu, X } from 'lucide-react';
+import { MapPin, Search, Bell, Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Live Map', path: '/' },
@@ -53,9 +53,6 @@ const Header = () => {
           {/* 아이콘 (데스크탑) */}
           <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <Bell className="size-5 text-gray-600" />
-          </button>
-          <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <User className="size-5 text-gray-600" />
           </button>
 
           {/* 햄버거 (모바일) */}
