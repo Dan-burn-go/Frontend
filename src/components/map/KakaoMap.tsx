@@ -7,7 +7,7 @@ const KakaoMap = () => {
   return (
     <Map
       center={DEFAULT_CENTER}
-      style={{ width: '100%', height: '100dvh' }}
+      style={{ width: '100%', height: '100%' }}
       level={DEFAULT_LEVEL}
     />
   );
