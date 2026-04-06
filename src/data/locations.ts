@@ -43,8 +43,8 @@ export const LOCATIONS: Location[] = [
   {
     areaCode: 'POI005',
     name: '잠실 관광특구',
-    latitude: 37.51331105877401,
-    longitude: 127.10023101886318,
+    latitude: 37.51113059993883,
+    longitude: 127.09811980036908,
     category: 'culture',
   },
   {
@@ -57,8 +57,8 @@ export const LOCATIONS: Location[] = [
   {
     areaCode: 'POI007',
     name: '홍대 관광특구',
-    latitude: 37.5568707448873,
-    longitude: 126.923778562273,
+    latitude: 37.5559412279911,
+    longitude: 126.924263894094,
     category: 'culture',
   },
   {
@@ -71,8 +71,8 @@ export const LOCATIONS: Location[] = [
   {
     areaCode: 'POI009',
     name: '광화문·덕수궁',
-    latitude: 37.5655638710672,
-    longitude: 126.974894754989,
+    latitude: 37.57596445980707,
+    longitude: 126.97685309595215,
     category: 'culture',
   },
   {
@@ -428,8 +428,8 @@ export const LOCATIONS: Location[] = [
   {
     areaCode: 'POI064',
     name: '덕수궁길·정동길',
-    latitude: 37.5655638710672,
-    longitude: 126.974894754989,
+    latitude: 37.5647964965887,
+    longitude: 126.97621930624,
     category: 'culture',
   },
   {
@@ -647,7 +647,7 @@ export const LOCATIONS: Location[] = [
     name: '서울대공원',
     latitude: 37.436451567677,
     longitude: 127.01389825362084,
-    category: 'culture',
+    category: 'park',
   },
   {
     areaCode: 'POI101',
@@ -675,7 +675,7 @@ export const LOCATIONS: Location[] = [
     name: '어린이대공원',
     latitude: 37.55147044344215,
     longitude: 127.08378909469191,
-    category: 'culture',
+    category: 'park',
   },
   {
     areaCode: 'POI105',
