@@ -9,6 +9,13 @@ export const CONGESTION_LEVEL_MAP: Record<string, CongestionLevel> = {
   붐빔: 'CROWDED',
 };
 
+export const CONGESTION_LABELS: Record<CongestionLevel, string> = {
+  QUIET: '여유',
+  MODERATE: '보통',
+  BUSY: '약간 붐빔',
+  CROWDED: '붐빔',
+};
+
 export const CONGESTION_COLORS: Record<CongestionLevel, string> = {
   QUIET: '#22c55e', // green-500
   MODERATE: '#fb923c', // orange-400
