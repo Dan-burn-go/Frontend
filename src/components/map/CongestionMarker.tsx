@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CustomOverlayMap } from 'react-kakao-maps-sdk';
 import { MapPin } from 'lucide-react';
-import { CONGESTION_COLORS } from '../../types/congestion';
+import { CONGESTION_COLORS, CONGESTION_LABELS } from '../../types/congestion';
 import type { PlaceMarker } from '../../types/congestion';
 
 interface CongestionMarkerProps {
@@ -49,7 +49,9 @@ const CongestionMarker = ({ marker, level }: CongestionMarkerProps) => {
         <CustomOverlayMap position={position} yAnchor={1.6}>
           <div className="bg-white rounded-xl px-3 py-2 shadow-lg border border-gray-100 text-sm whitespace-nowrap">
             <p className="font-semibold text-gray-800">{marker.name}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{marker.congestionLevel}</p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              혼잡도: {CONGESTION_LABELS[marker.congestionLevel]}
+            </p>
           </div>
         </CustomOverlayMap>
       )}
