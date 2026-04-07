@@ -14,7 +14,11 @@ export const useCongestionMarkers = (): PlaceMarker[] => {
         for (const item of data) {
           const location = LOCATION_MAP.get(item.areaCode);
           if (!location) continue;
-          const congestionLevel = CONGESTION_LEVEL_MAP[item.congestionLevel] ?? 'QUIET';
+          const congestionLevel = CONGESTION_LEVEL_MAP[item.congestionLevel];
+          if (!congestionLevel) {
+            console.warn(`[useCongestionMarkers] 알 수 없는 혼잡도 레벨: ${item.congestionLevel}`);
+            continue;
+          }
           result.push({
             areaCode: item.areaCode,
             name: location.name,
