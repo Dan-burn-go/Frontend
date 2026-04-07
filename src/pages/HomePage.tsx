@@ -12,7 +12,7 @@ const HomePage = () => {
     <div className="flex flex-col w-full h-dvh">
       <Header />
       <div className="relative flex-1">
-        <KakaoMap />
+        <KakaoMap selectedCategory={selectedCategory} />
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
         <MapControls
           onZoomIn={() => {}}
