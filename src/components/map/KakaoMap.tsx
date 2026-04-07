@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Map } from 'react-kakao-maps-sdk';
 import { useCongestionMarkers } from '../../hooks/useCongestionMarkers';
 import CongestionMarker from './CongestionMarker';
@@ -14,15 +14,17 @@ const KakaoMap = ({ selectedCategory }: KakaoMapProps) => {
   const markers = useCongestionMarkers();
   const [level, setLevel] = useState(DEFAULT_LEVEL);
 
-  const filtered = selectedCategory === 'all'
-    ? markers
-    : markers.filter((m) => m.category === selectedCategory);
+  const filtered = useMemo(
+    () =>
+      selectedCategory === 'all' ? markers : markers.filter((m) => m.category === selectedCategory),
+    [markers, selectedCategory],
+  );
 
   return (
     <Map
       center={DEFAULT_CENTER}
       style={{ width: '100%', height: '100%' }}
-      level={DEFAULT_LEVEL}
+      level={level}
       onZoomChanged={(map) => setLevel(map.getLevel())}
     >
       {filtered.map((marker) => (
