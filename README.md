@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# Dan-burn-go Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+  > 서울 주요 관광지 122곳의 **실시간 혼잡도**를 지도 위에 시각화하고, AI 기반 혼잡 원인 분석과 대체 장소·교통 경로를 안내하는 React 웹 프론트엔드
 
-Currently, two official plugins are available:
+  ---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+  ## Tech Stack
 
-## React Compiler
+  ![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
+  ![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)
+  ![Vite](https://img.shields.io/badge/Vite_7-646CFF?style=flat-square&logo=vite&logoColor=white)
+  ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+  ---
 
-## Expanding the ESLint configuration
+  ## Key Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+  ### 1. 실시간 혼잡도 지도
+  - 카카오맵 위에 122개 관광지 혼잡도 마커 시각화
+  - 카테고리 필터로 관심 장소 분류 조회
+  - 혼잡도 단계(여유 / 보통 / 약간 붐빔 / 붐빔)를 색상 범례로 안내
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+  ### 2. (도입 예정) 장소 상세 페이지
+  - 선택 장소의 현재 혼잡도 수치 및 AI 분석 원인 표시
+  - 반경 2km 이내 대체 장소 목록 및 소요 시간 안내
+  - 교통 경로(버스) 추천
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+  ### 3. (도입 예정) 혼잡도 랭킹
+  - 혼잡도 기준 실시간 장소 순위 제공
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+  ---
+
+  ## Project Structure
+
 ```
+src/
+├── api/              # Axios 기반 API 호출 모듈
+├── components/
+│   ├── congestion/   # 혼잡도 범례, 배지 등 UI 컴포넌트
+│   ├── filter/       # 카테고리 필터
+│   ├── layout/       # Header 등 공통 레이아웃
+│   └── map/          # KakaoMap, MapControls 컴포넌트
+├── hooks/            # 커스텀 훅
+├── pages/
+│   ├── HomePage.tsx      # 메인 지도 페이지 (/)
+│   ├── DetailPage.tsx    # 장소 상세 페이지 (/place/:placeId)
+│   └── RankingPage.tsx   # 혼잡도 랭킹 페이지 (/ranking)
+├── types/            # TypeScript 타입 정의
+└── data/             # 정적 데이터
+```
+## Getting Started
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 설치 및 실행
+```
+# 의존성 설치
+npm install
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# 개발 서버 실행
+npm run dev
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 빌드
+npm run build
 ```
