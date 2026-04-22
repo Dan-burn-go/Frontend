@@ -17,7 +17,6 @@ export const useCongestionMarkers = (): PlaceMarker[] => {
 
         const latestTime = data[0].populationTime;
         if (latestTime === prevPopulationTimeRef.current) return;
-        prevPopulationTimeRef.current = latestTime;
 
         const result: PlaceMarker[] = [];
         for (const item of data) {
@@ -42,6 +41,7 @@ export const useCongestionMarkers = (): PlaceMarker[] => {
           });
         }
         setMarkers(result);
+        prevPopulationTimeRef.current = latestTime;
       })
       .catch((err) => {
         console.error('[useCongestionMarkers] 혼잡도 데이터 로드 실패:', err);
