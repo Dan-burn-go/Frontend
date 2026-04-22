@@ -1,15 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchAllCongestion } from '../api/congestionApi';
 import { LOCATION_MAP } from '../data/locations';
 import { CONGESTION_LEVEL_MAP } from '../types/congestion';
 import type { PlaceMarker } from '../types/congestion';
 
+const POLLING_INTERVAL = 60_000;
+
 export const useCongestionMarkers = (): PlaceMarker[] => {
   const [markers, setMarkers] = useState<PlaceMarker[]>([]);
+  const prevPopulationTimeRef = useRef<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetchAllCongestion()
       .then((data) => {
+        if (data.length === 0) return;
+
+        const latestTime = data[0].populationTime;
+        if (latestTime === prevPopulationTimeRef.current) return;
+
         const result: PlaceMarker[] = [];
         for (const item of data) {
           const location = LOCATION_MAP.get(item.areaCode);
@@ -33,11 +41,18 @@ export const useCongestionMarkers = (): PlaceMarker[] => {
           });
         }
         setMarkers(result);
+        prevPopulationTimeRef.current = latestTime;
       })
       .catch((err) => {
         console.error('[useCongestionMarkers] 혼잡도 데이터 로드 실패:', err);
       });
   }, []);
+
+  useEffect(() => {
+    load();
+    const interval = setInterval(load, POLLING_INTERVAL);
+    return () => clearInterval(interval);
+  }, [load]);
 
   return markers;
 };
