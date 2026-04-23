@@ -15,7 +15,8 @@ interface CategoryFilterProps {
 
 const CategoryFilter = ({ selected, onSelect }: CategoryFilterProps) => {
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-white rounded-full px-3 py-2 shadow-md">
+    <div className="absolute top-4 inset-x-4 z-10 flex justify-center">
+      <div className="flex items-center gap-2 bg-white rounded-full px-3 py-2 shadow-md overflow-x-auto max-w-full w-fit">
       {CATEGORIES.map(({ id, label, Icon }) => (
         <button
           key={id}
@@ -30,6 +31,7 @@ const CategoryFilter = ({ selected, onSelect }: CategoryFilterProps) => {
           <span>{label}</span>
         </button>
       ))}
+      </div>
     </div>
   );
 };
