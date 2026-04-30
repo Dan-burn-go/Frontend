@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:remote": "API_TARGET=https://api.goseoul.today vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write src/**/*.{ts,tsx}",
