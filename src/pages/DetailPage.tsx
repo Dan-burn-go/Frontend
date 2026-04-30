@@ -11,12 +11,13 @@ import type { CongestionData, PlaceMarker } from '../types/congestion';
 const DetailPage = () => {
   const { placeId } = useParams<{ placeId: string }>();
   const navigate = useNavigate();
-  const { state } = useLocation() as { state: { marker?: PlaceMarker } | null };
+  const { state } = useLocation();
+  const locationState = state as { marker?: PlaceMarker } | null;
   const [data, setData] = useState<CongestionData | null>(null);
-  const [loading, setLoading] = useState(!state?.marker);
+  const [loading, setLoading] = useState(!locationState?.marker);
 
   const placeInfo = placeId ? LOCATION_MAP.get(placeId) : null;
-  const hasMarkerState = !!state?.marker;
+  const hasMarkerState = !!locationState?.marker;
 
   useEffect(() => {
     if (!placeId || hasMarkerState) return;
@@ -26,7 +27,7 @@ const DetailPage = () => {
       .finally(() => setLoading(false));
   }, [placeId, hasMarkerState]);
 
-  const marker = state?.marker ?? null;
+  const marker = locationState?.marker ?? null;
   const congestionLevel = marker
     ? marker.congestionLevel
     : data
@@ -68,7 +69,7 @@ const DetailPage = () => {
                 <h1 className="text-2xl font-bold text-gray-900">{placeInfo.name}</h1>
                 <div className="flex gap-1.5 mt-2">
                   <span className="text-xs text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
-                    {CATEGORY_LABELS[placeInfo.category]}
+                    {CATEGORY_LABELS[placeInfo.category] ?? placeInfo.category}
                   </span>
                 </div>
               </div>
