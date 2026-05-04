@@ -4,6 +4,8 @@ import Header from '../components/layout/Header';
 import CategoryFilter from '../components/filter/CategoryFilter';
 import MapControls from '../components/map/MapControls';
 import CongestionLegend from '../components/congestion/CongestionLegend';
+import CongestionRankCard from '../components/congestion/CongestionRankCard';
+
 
 const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -16,6 +18,8 @@ const HomePage = () => {
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
         <MapControls onZoomIn={() => {}} onZoomOut={() => {}} onLocate={() => {}} />
         <CongestionLegend />
+        <CongestionRankCard type="busiest" initialRatio={{ x: 1, y: 0.13 }} />
+        <CongestionRankCard type="relaxed" initialRatio={{ x: 1, y: 0.40 }} />
       </div>
     </div>
   );

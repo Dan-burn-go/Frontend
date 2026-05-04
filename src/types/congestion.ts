@@ -40,6 +40,22 @@ export interface CongestionData {
   forecasts: ForecastItem[];
 }
 
+export interface RankingEntry {
+  rank: number;
+  areaCode: string;
+  areaName: string;
+  congestionLevel: string;
+  minPeopleCount: number;
+  maxPeopleCount: number;
+  populationTime: string;
+}
+
+export interface CongestionRankingResponse {
+  type: string;
+  totalCount: number;
+  rankings: RankingEntry[];
+}
+
 // 좌표 + 혼잡도가 합쳐진 마커 데이터
 export interface PlaceMarker {
   areaCode: string;
