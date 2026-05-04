@@ -28,7 +28,9 @@ const CongestionRankCard = ({ type, initialRatio }: Props) => {
       .catch((err) => {
         if (!axios.isCancel(err)) setError(true);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
 
     return () => controller.abort();
   }, [type]);
