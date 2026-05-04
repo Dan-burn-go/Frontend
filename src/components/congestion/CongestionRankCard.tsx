@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import axios from 'axios';
 import { fetchBusiestRanking, fetchRelaxedRanking } from '../../api/congestionApi';
 import { CONGESTION_LEVEL_MAP, CONGESTION_COLORS, CONGESTION_LABELS } from '../../types/congestion';
 import { useDraggable } from '../../hooks/useDraggable';
@@ -25,7 +26,7 @@ const CongestionRankCard = ({ type, initialRatio }: Props) => {
     loadData(3, controller.signal)
       .then((data) => setEntries(data.rankings))
       .catch((err) => {
-        if (err.name !== 'CanceledError') setError(true);
+        if (!axios.isCancel(err)) setError(true);
       })
       .finally(() => setLoading(false));
 
@@ -43,10 +44,10 @@ const CongestionRankCard = ({ type, initialRatio }: Props) => {
       onMouseDown={handleMouseDown}
       className="fixed z-10 bg-white rounded-2xl shadow-2xl border border-gray-200 p-5 w-[16vw] min-w-56 max-w-80 select-none"
       style={{
-        left: position.x,
-        top: position.y,
+        left: 0,
+        top: 0,
+        transform: `translate3d(${position.x}px, ${position.y}px, 0) scale(${scale})`,
         cursor: isDragging ? 'grabbing' : 'grab',
-        transform: `scale(${scale})`,
         transformOrigin: 'top left',
       }}
     >
