@@ -1,4 +1,6 @@
 import { useEffect, useReducer } from 'react';
+
+const RANKING_LIMIT = 122;
 import axios from 'axios';
 import { fetchBusiestRanking, fetchRelaxedRanking } from '../api/congestionApi';
 import type { RankingEntry } from '../types/congestion';
@@ -25,7 +27,7 @@ export const useRanking = (tab: 'busiest' | 'relaxed') => {
     dispatch({ type: 'reset' });
     const loadData = tab === 'busiest' ? fetchBusiestRanking : fetchRelaxedRanking;
 
-    loadData(122, controller.signal)
+    loadData(RANKING_LIMIT, controller.signal)
       .then((data) => {
         if (!controller.signal.aborted) {
           dispatch({ type: 'success', entries: data.rankings });

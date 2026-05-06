@@ -63,7 +63,8 @@ const RankingItem = ({ entry, onClick }: RankingItemProps) => {
 const RankingPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = (searchParams.get('tab') ?? 'busiest') as 'busiest' | 'relaxed';
+  const tabParam = searchParams.get('tab');
+  const tab: 'busiest' | 'relaxed' = tabParam === 'relaxed' ? 'relaxed' : 'busiest';
 
   const { entries, loading, error } = useRanking(tab);
   const isBusiest = tab === 'busiest';
