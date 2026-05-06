@@ -27,9 +27,10 @@ const RankingItem = ({ entry, onClick }: RankingItemProps) => {
   const avgPeople = Math.round((entry.minPeopleCount + entry.maxPeopleCount) / 2);
 
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className="cursor-pointer bg-white rounded-2xl px-8 py-5 flex items-center gap-6 hover:shadow-md transition-shadow"
+      className="w-full text-left cursor-pointer bg-white rounded-2xl px-8 py-5 flex items-center gap-6 hover:shadow-md transition-shadow"
     >
       <div
         className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold shrink-0 ${
@@ -56,7 +57,7 @@ const RankingItem = ({ entry, onClick }: RankingItemProps) => {
       >
         {label}
       </span>
-    </div>
+    </button>
   );
 };
 
