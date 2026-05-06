@@ -4,7 +4,7 @@ import { MapPin, Search, Bell, Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Live Map', path: '/' },
-  { label: 'Hotspots', path: '/ranking' },
+  { label: 'Hotspots', path: '/hotspots' },
   { label: 'Route Planner', path: '/route' },
 ];
 
