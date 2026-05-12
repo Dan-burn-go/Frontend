@@ -3,7 +3,7 @@ import { TrendingUp, TrendingDown, ArrowLeft, Users } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { useRanking } from '../hooks/useRanking';
 import { LOCATION_MAP } from '../data/locations';
-import { CATEGORY_LABELS } from '../data/categories';
+import { CATEGORY_NAMES } from '../data/categories';
 import { CONGESTION_LEVEL_MAP, CONGESTION_COLORS, CONGESTION_LABELS } from '../types/congestion';
 import type { RankingEntry } from '../types/congestion';
 
@@ -23,7 +23,7 @@ const RankingItem = ({ entry, onClick }: RankingItemProps) => {
   const color = level ? CONGESTION_COLORS[level] : '#9ca3af';
   const label = level ? CONGESTION_LABELS[level] : entry.congestionLevel;
   const location = LOCATION_MAP.get(entry.areaCode);
-  const category = location ? (CATEGORY_LABELS[location.category] ?? location.category) : null;
+  const category = location ? `#${CATEGORY_NAMES[location.category]}` : null;
   const avgPeople = Math.round((entry.minPeopleCount + entry.maxPeopleCount) / 2);
 
   return (
