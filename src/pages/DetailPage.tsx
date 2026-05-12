@@ -3,8 +3,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Users, Clock } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { fetchCongestionByAreaCode } from '../api/congestionApi';
-import { LOCATION_MAP } from '../data/locations';
-import { CATEGORY_LABELS } from '../data/categories';
+import { LOCATION_MAP, getLocationImageUrl } from '../data/locations';
+import { CATEGORY_NAMES } from '../data/categories';
 import { CONGESTION_COLORS, CONGESTION_LABELS, CONGESTION_LEVEL_MAP } from '../types/congestion';
 import type { CongestionData, PlaceMarker } from '../types/congestion';
 
@@ -63,45 +63,57 @@ const DetailPage = () => {
         )}
 
         {!loading && (marker || data) && placeInfo && congestionLevel && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <div className="flex items-start justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{placeInfo.name}</h1>
-                <div className="flex gap-1.5 mt-2">
-                  <span className="text-xs text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
-                    {CATEGORY_LABELS[placeInfo.category] ?? placeInfo.category}
-                  </span>
-                </div>
-              </div>
-              <span
-                className="text-sm font-bold px-3 py-1.5 rounded-full text-white mt-1 shrink-0"
-                style={{ backgroundColor: color }}
-              >
-                {CONGESTION_LABELS[congestionLevel]}
-              </span>
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+            <div className="relative bg-gray-100">
+              <img
+                src={getLocationImageUrl(placeInfo.name)}
+                alt={placeInfo.name}
+                className="w-full h-56 object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.visibility = 'hidden';
+                }}
+              />
             </div>
-
-            {congestionMessage && (
-              <p className="mt-4 text-sm text-gray-600 leading-relaxed">{congestionMessage}</p>
-            )}
-
-            <div className="flex gap-8 mt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                  <Users size={18} className="text-blue-500" />
-                </div>
+            <div className="p-6">
+              <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs text-gray-400">Current Visitors</p>
-                  <p className="text-xl font-bold text-gray-900">{avgPeople.toLocaleString()}</p>
+                  <h1 className="text-2xl font-bold text-gray-900">{placeInfo.name}</h1>
+                  <div className="flex gap-1.5 mt-2">
+                    <span className="text-xs text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
+                      {`#${CATEGORY_NAMES[placeInfo.category]}`}
+                    </span>
+                  </div>
                 </div>
+                <span
+                  className="text-sm font-bold px-3 py-1.5 rounded-full text-white mt-1 shrink-0"
+                  style={{ backgroundColor: color }}
+                >
+                  {CONGESTION_LABELS[congestionLevel]}
+                </span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
-                  <Clock size={18} className="text-purple-500" />
+
+              {congestionMessage && (
+                <p className="mt-4 text-sm text-gray-600 leading-relaxed">{congestionMessage}</p>
+              )}
+
+              <div className="flex gap-8 mt-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <Users size={18} className="text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Current Visitors</p>
+                    <p className="text-xl font-bold text-gray-900">{avgPeople.toLocaleString()}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-400">Updated</p>
-                  <p className="text-sm font-medium text-gray-900">{populationTime}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
+                    <Clock size={18} className="text-purple-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Updated</p>
+                    <p className="text-sm font-medium text-gray-900">{populationTime}</p>
+                  </div>
                 </div>
               </div>
             </div>
