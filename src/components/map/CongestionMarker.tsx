@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CustomOverlayMap } from 'react-kakao-maps-sdk';
 import { MapPin, X } from 'lucide-react';
 import { CONGESTION_COLORS, CONGESTION_LABELS } from '../../types/congestion';
-import { CATEGORY_LABELS } from '../../data/categories';
+import { CATEGORY_NAMES } from '../../data/categories';
 import type { PlaceMarker } from '../../types/congestion';
 
 interface CongestionMarkerProps {
@@ -71,7 +71,7 @@ const CongestionMarker = ({ marker, level }: CongestionMarkerProps) => {
 
               <div className="flex gap-1 mb-2">
                 <span className="text-xs text-gray-500 bg-gray-100 rounded-full px-2 py-0.5">
-                  {CATEGORY_LABELS[marker.category] ?? marker.category}
+                  {`#${CATEGORY_NAMES[marker.category as keyof typeof CATEGORY_NAMES] ?? marker.category}`}
                 </span>
               </div>
 
