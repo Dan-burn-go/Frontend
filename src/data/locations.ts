@@ -11,6 +11,9 @@ export interface Location {
   category: LocationCategory;
 }
 
+export const getLocationImageUrl = (name: string): string =>
+  `https://data.seoul.go.kr/SeoulRtd/images/hotspot/${encodeURIComponent(name)}.jpg`;
+
 export const LOCATIONS: Location[] = [
   {
     areaCode: 'POI001',
