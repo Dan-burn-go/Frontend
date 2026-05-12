@@ -34,7 +34,7 @@ export function useHotspotsFilter(searchValue: string) {
   const pageParam = parseInt(searchParams.get('page') ?? '1', 10);
 
   const filtered = LOCATIONS.filter((loc) => {
-    const matchesQuery = loc.name.includes(searchValue);
+    const matchesQuery = loc.name.toLowerCase().includes(searchValue.toLowerCase());
     const matchesCategory = activeCategory === 'all' || loc.category === activeCategory;
     return matchesQuery && matchesCategory;
   });
@@ -56,7 +56,7 @@ export function useHotspotsFilter(searchValue: string) {
     const params: Record<string, string> = {};
     if (value) params.q = value;
     if (activeCategory !== 'all') params.category = activeCategory;
-    setSearchParams(params);
+    setSearchParams(params, { replace: true });
   };
 
   const handleCategory = (value: FilterCategory) => {
