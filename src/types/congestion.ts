@@ -23,6 +23,8 @@ export const CONGESTION_COLORS: Record<CongestionLevel, string> = {
   CROWDED: '#ef4444', // red-500
 };
 
+export const CONGESTION_COLOR_UNKNOWN = '#9ca3af'; // gray-400, 혼잡도 미확인 상태
+
 export interface ForecastItem {
   forecastTime: string;
   congestionLevel: string;

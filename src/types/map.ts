@@ -1,3 +1,12 @@
+export interface AlternativeLocation {
+  areaCode: string;
+  locationName: string;
+  latitude: number;
+  longitude: number;
+  priority: number;
+  congestionLevel: string;
+}
+
 export interface CultureEvent {
   title: string;
   place: string;
