@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Users, Clock } from 'lucide-react';
 import Header from '../components/layout/Header';
+import CultureEventCard from '../components/culture/CultureEventCard';
 import { fetchCongestionByAreaCode } from '../api/congestionApi';
+import { useCultureEvents } from '../hooks/useCultureEvents';
 import { LOCATION_MAP, getLocationImageUrl } from '../data/locations';
 import { CATEGORY_NAMES } from '../data/categories';
 import { CONGESTION_COLORS, CONGESTION_LABELS, CONGESTION_LEVEL_MAP } from '../types/congestion';
@@ -18,6 +20,8 @@ const DetailPage = () => {
 
   const placeInfo = placeId ? LOCATION_MAP.get(placeId) : null;
   const hasMarkerState = !!locationState?.marker;
+
+  const eventsState = useCultureEvents(placeInfo?.latitude ?? null, placeInfo?.longitude ?? null);
 
   useEffect(() => {
     if (!placeId || hasMarkerState) return;
@@ -117,6 +121,35 @@ const DetailPage = () => {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+        {placeInfo && (
+          <div className="mt-6">
+            <h2 className="text-base font-bold text-gray-800 mb-3">주변 행사/문화 정보</h2>
+            {eventsState.status === 'loading' && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-white rounded-2xl shadow-sm animate-pulse h-56" />
+                ))}
+              </div>
+            )}
+            {eventsState.status === 'error' && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm text-center text-gray-400 text-sm">
+                행사 정보를 불러올 수 없어요.
+              </div>
+            )}
+            {eventsState.status === 'success' && eventsState.data.length === 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm text-center text-gray-400 text-sm">
+                주변 행사/문화 정보가 없어요.
+              </div>
+            )}
+            {eventsState.status === 'success' && eventsState.data.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {eventsState.data.map((event) => (
+                  <CultureEventCard key={event.orgLink} event={event} />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
