@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import KakaoMap from '../components/map/KakaoMap';
 import Header from '../components/layout/Header';
 import CategoryFilter from '../components/filter/CategoryFilter';
@@ -18,10 +18,16 @@ type AlternativeState = {
 const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [alternativeState, setAlternativeState] = useState<AlternativeState>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const handleAlternativeRequest = useCallback(async (sourceMarker: PlaceMarker) => {
-    const locations = await fetchAlternativeLocations(sourceMarker.areaCode).catch(() => []);
-    setAlternativeState({ sourceMarker, locations });
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+
+    const locations = await fetchAlternativeLocations(sourceMarker.areaCode, abortRef.current.signal).catch(() => []);
+    if (locations.length > 0) {
+      setAlternativeState({ sourceMarker, locations });
+    }
   }, []);
 
   const handleAlternativeClose = useCallback(() => {

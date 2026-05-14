@@ -47,10 +47,12 @@ const KakaoMap = ({
       return;
     }
 
-    savedViewRef.current = {
-      center: mapRef.current.getCenter(),
-      level: mapRef.current.getLevel(),
-    };
+    if (!savedViewRef.current) {
+      savedViewRef.current = {
+        center: mapRef.current.getCenter(),
+        level: mapRef.current.getLevel(),
+      };
+    }
 
     const bounds = new window.kakao.maps.LatLngBounds();
     if (sourceMarker) {
