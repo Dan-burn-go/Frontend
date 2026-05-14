@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import axios from 'axios';
 import KakaoMap from '../components/map/KakaoMap';
 import Header from '../components/layout/Header';
 import CategoryFilter from '../components/filter/CategoryFilter';
@@ -22,11 +23,19 @@ const HomePage = () => {
 
   const handleAlternativeRequest = useCallback(async (sourceMarker: PlaceMarker) => {
     abortRef.current?.abort();
-    abortRef.current = new AbortController();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
-    const locations = await fetchAlternativeLocations(sourceMarker.areaCode, abortRef.current.signal).catch(() => []);
-    if (locations.length > 0) {
-      setAlternativeState({ sourceMarker, locations });
+    try {
+      const locations = await fetchAlternativeLocations(sourceMarker.areaCode, controller.signal);
+      if (locations.length > 0) {
+        setAlternativeState({ sourceMarker, locations });
+      } else {
+        setAlternativeState(null);
+      }
+    } catch (error: unknown) {
+      if (axios.isCancel(error)) return;
+      setAlternativeState(null);
     }
   }, []);
 
