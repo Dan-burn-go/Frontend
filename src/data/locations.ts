@@ -865,3 +865,9 @@ export const LOCATIONS: Location[] = [
 ];
 
 export const LOCATION_MAP = new Map<string, Location>(LOCATIONS.map((loc) => [loc.areaCode, loc]));
+
+// 이름 부분 일치(대소문자 무관) 검색. 빈 쿼리는 전체를 반환한다.
+export const searchLocationsByName = (query: string): Location[] => {
+  const q = query.trim().toLowerCase();
+  return LOCATIONS.filter((loc) => loc.name.toLowerCase().includes(q));
+};
