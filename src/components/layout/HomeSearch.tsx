@@ -52,14 +52,16 @@ const HomeSearch = ({ onSelect }: Props) => {
       </div>
 
       {open && value.trim() && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
+        <div
+          onMouseDown={(e) => e.preventDefault()}
+          className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden"
+        >
           {results.length > 0 ? (
             <ul className="py-1 max-h-72 overflow-y-auto">
               {results.map((loc) => (
                 <li key={loc.areaCode}>
                   <button
                     type="button"
-                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleSelect(loc.areaCode)}
                     className="cursor-pointer w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                   >
