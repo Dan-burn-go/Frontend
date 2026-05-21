@@ -23,6 +23,7 @@ export const useMapControls = () => {
   }, []);
 
   const panTo = useCallback((lat: number, lng: number) => {
+    if (!window.kakao) return;
     mapRef.current?.panTo(new window.kakao.maps.LatLng(lat, lng));
   }, []);
 
@@ -32,9 +33,13 @@ export const useMapControls = () => {
       (pos) => {
         const { latitude, longitude } = pos.coords;
         setUserLocation({ lat: latitude, lng: longitude });
-        mapRef.current?.panTo(new window.kakao.maps.LatLng(latitude, longitude));
+        if (window.kakao) {
+          mapRef.current?.panTo(new window.kakao.maps.LatLng(latitude, longitude));
+        }
       },
-      () => {},
+      (error) => {
+        console.error('Geolocation error:', error);
+      },
     );
   }, []);
 
