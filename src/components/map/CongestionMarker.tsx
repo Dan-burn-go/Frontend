@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CustomOverlayMap } from 'react-kakao-maps-sdk';
 import { X } from 'lucide-react';
@@ -14,6 +15,7 @@ interface CongestionMarkerProps {
   onOpen: () => void;
   onClose: () => void;
   onAlternativeRequest: (marker: PlaceMarker) => void;
+  bounceNonce?: number | null;
 }
 
 const CongestionMarker = ({
@@ -23,6 +25,7 @@ const CongestionMarker = ({
   onOpen,
   onClose,
   onAlternativeRequest,
+  bounceNonce,
 }: CongestionMarkerProps) => {
   const navigate = useNavigate();
   const color = CONGESTION_COLORS[marker.congestionLevel];
@@ -30,14 +33,21 @@ const CongestionMarker = ({
   const size = calcMarkerSize(level);
   const avgPeople = Math.round((marker.minPeopleCount + marker.maxPeopleCount) / 2);
 
+  // 검색 선택 시 한 번만 튀도록: 애니메이션을 끝낸 nonce를 기록해 그 외 리렌더(줌 등)에서는 재생 안 함
+  const [finishedNonce, setFinishedNonce] = useState<number | null>(null);
+  const shouldBounce = bounceNonce != null && bounceNonce !== finishedNonce;
+
   return (
     <>
       {!isOpen && (
         <CustomOverlayMap position={position} yAnchor={1}>
           <div
-            className="cursor-pointer flex flex-col items-center hover:scale-110 active:scale-95 transition-transform"
+            className={`cursor-pointer flex flex-col items-center hover:scale-110 active:scale-95 transition-transform ${
+              shouldBounce ? 'marker-bounce' : ''
+            }`}
             style={{ filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.3))' }}
             onClick={onOpen}
+            onAnimationEnd={() => setFinishedNonce(bounceNonce ?? null)}
           >
             <MarkerPin color={color} size={size} />
           </div>

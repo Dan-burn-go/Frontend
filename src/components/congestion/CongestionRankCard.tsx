@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowRight, GripVertical } from 'lucide-react';
 import axios from 'axios';
 import { fetchBusiestRanking, fetchRelaxedRanking } from '../../api/congestionApi';
 import { CONGESTION_LEVEL_MAP, CONGESTION_COLORS, CONGESTION_LABELS } from '../../types/congestion';
@@ -44,7 +44,7 @@ const CongestionRankCard = ({ type, initialRatio }: Props) => {
     <div
       ref={ref}
       onMouseDown={handleMouseDown}
-      className="fixed z-10 bg-white rounded-2xl shadow-2xl border border-gray-200 p-5 w-[16vw] min-w-56 max-w-80 select-none"
+      className="rank-card-hint fixed z-10 bg-white rounded-2xl shadow-2xl border border-gray-200 p-5 w-[16vw] min-w-56 max-w-80 select-none"
       style={{
         left: 0,
         top: 0,
@@ -56,6 +56,7 @@ const CongestionRankCard = ({ type, initialRatio }: Props) => {
       <div className="flex items-center gap-2 mb-4">
         <Icon size={16} className={iconColor} />
         <span className="text-base font-bold text-gray-900">{title}</span>
+        <GripVertical size={16} className="ml-auto text-gray-300" aria-hidden />
       </div>
 
       {loading ? (
