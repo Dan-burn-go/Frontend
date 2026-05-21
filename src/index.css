@@ -11,3 +11,57 @@
     font-family: system-ui, -apple-system, sans-serif;
   }
 }
+
+/* 드래그 가능 카드: 등장 시 한 번 까딱이는 힌트 (translate 속성 사용 → inline transform과 충돌 없음) */
+@keyframes rank-card-hint {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  30% {
+    translate: 0 -7px;
+  }
+  60% {
+    translate: 0 -3px;
+  }
+}
+
+.rank-card-hint {
+  animation: rank-card-hint 0.7s ease-in-out 0.4s 1;
+}
+
+/* 검색으로 선택된 마커: 통통 튀는 강조 효과 */
+@keyframes marker-bounce {
+  0% {
+    translate: 0 0;
+  }
+  15% {
+    translate: 0 -16px;
+  }
+  30% {
+    translate: 0 0;
+  }
+  45% {
+    translate: 0 -9px;
+  }
+  60% {
+    translate: 0 0;
+  }
+  75% {
+    translate: 0 -4px;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+.marker-bounce {
+  animation: marker-bounce 0.9s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rank-card-hint,
+  .marker-bounce {
+    animation: none;
+  }
+}
