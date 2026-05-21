@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-import { LOCATIONS } from '../data/locations';
+import { searchLocationsByName } from '../data/locations';
 import type { LocationCategory } from '../data/locations';
 
 export type FilterCategory = LocationCategory | 'all';
@@ -33,11 +33,9 @@ export function useHotspotsFilter(searchValue: string) {
     : 'all';
   const pageParam = parseInt(searchParams.get('page') ?? '1', 10);
 
-  const filtered = LOCATIONS.filter((loc) => {
-    const matchesQuery = loc.name.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesCategory = activeCategory === 'all' || loc.category === activeCategory;
-    return matchesQuery && matchesCategory;
-  });
+  const filtered = searchLocationsByName(searchValue).filter(
+    (loc) => activeCategory === 'all' || loc.category === activeCategory,
+  );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage =
