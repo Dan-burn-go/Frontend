@@ -4,6 +4,7 @@ import { useCongestionMarkers } from '../../hooks/useCongestionMarkers';
 import CongestionMarker from './CongestionMarker';
 import AlternativeMarker from './AlternativeMarker';
 import SourceMarker from './SourceMarker';
+import CurrentLocationMarker from './CurrentLocationMarker';
 import type { AlternativeLocation } from '../../types/map';
 import type { PlaceMarker } from '../../types/congestion';
 
@@ -15,6 +16,9 @@ interface KakaoMapProps {
   alternativeLocations: AlternativeLocation[];
   sourceMarker: PlaceMarker | null;
   onAlternativeRequest: (marker: PlaceMarker) => void;
+  onMapReady?: (map: kakao.maps.Map) => void;
+  userLocation?: { lat: number; lng: number } | null;
+  bounceTarget?: { areaCode: string; nonce: number } | null;
 }
 
 const KakaoMap = ({
@@ -22,6 +26,9 @@ const KakaoMap = ({
   alternativeLocations,
   sourceMarker,
   onAlternativeRequest,
+  onMapReady,
+  userLocation,
+  bounceTarget,
 }: KakaoMapProps) => {
   const markers = useCongestionMarkers();
   const [level, setLevel] = useState(DEFAULT_LEVEL);
@@ -71,6 +78,7 @@ const KakaoMap = ({
       level={level}
       onCreate={(map) => {
         mapRef.current = map;
+        onMapReady?.(map);
       }}
       onZoomChanged={(map) => setLevel(map.getLevel())}
     >
@@ -84,9 +92,13 @@ const KakaoMap = ({
             onOpen={() => setOpenMarkerId(marker.areaCode)}
             onClose={() => setOpenMarkerId(null)}
             onAlternativeRequest={onAlternativeRequest}
+            bounceNonce={bounceTarget?.areaCode === marker.areaCode ? bounceTarget.nonce : null}
           />
         ))}
       {sourceMarker && <SourceMarker marker={sourceMarker} level={level} />}
+      {userLocation && (
+        <CurrentLocationMarker latitude={userLocation.lat} longitude={userLocation.lng} />
+      )}
       {alternativeLocations.map((loc) => (
         <AlternativeMarker key={loc.areaCode} location={loc} level={level} />
       ))}

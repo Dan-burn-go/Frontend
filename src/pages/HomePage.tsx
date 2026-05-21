@@ -8,6 +8,8 @@ import CongestionLegend from '../components/congestion/CongestionLegend';
 import CongestionRankCard from '../components/congestion/CongestionRankCard';
 import AlternativeLocationBanner from '../components/map/AlternativeLocationBanner';
 import { fetchAlternativeLocations } from '../api/mapApi';
+import { useMapControls } from '../hooks/useMapControls';
+import { LOCATION_MAP } from '../data/locations';
 import type { AlternativeLocation } from '../types/map';
 import type { PlaceMarker } from '../types/congestion';
 
@@ -19,7 +21,20 @@ type AlternativeState = {
 const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [alternativeState, setAlternativeState] = useState<AlternativeState>(null);
+  const [searchFocus, setSearchFocus] = useState<{ areaCode: string; nonce: number } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const { setMap, zoomIn, zoomOut, locate, panTo, userLocation } = useMapControls();
+
+  const handleSearchSelect = useCallback(
+    (areaCode: string) => {
+      const loc = LOCATION_MAP.get(areaCode);
+      if (loc) panTo(loc.latitude, loc.longitude);
+      setSelectedCategory('all');
+      setAlternativeState(null);
+      setSearchFocus({ areaCode, nonce: Date.now() });
+    },
+    [panTo],
+  );
 
   const handleAlternativeRequest = useCallback(async (sourceMarker: PlaceMarker) => {
     abortRef.current?.abort();
@@ -45,13 +60,16 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col w-full h-dvh">
-      <Header />
+      <Header onSearchSelect={handleSearchSelect} />
       <div className="relative flex-1 overflow-hidden">
         <KakaoMap
           selectedCategory={selectedCategory}
           alternativeLocations={alternativeState?.locations ?? []}
           sourceMarker={alternativeState?.sourceMarker ?? null}
           onAlternativeRequest={handleAlternativeRequest}
+          onMapReady={setMap}
+          userLocation={userLocation}
+          bounceTarget={searchFocus}
         />
         {alternativeState && (
           <AlternativeLocationBanner
@@ -61,7 +79,7 @@ const HomePage = () => {
           />
         )}
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
-        <MapControls onZoomIn={() => {}} onZoomOut={() => {}} onLocate={() => {}} />
+        <MapControls onZoomIn={zoomIn} onZoomOut={zoomOut} onLocate={locate} />
         <CongestionLegend />
         <CongestionRankCard type="busiest" initialRatio={{ x: 1, y: 0.13 }} />
         <CongestionRankCard type="relaxed" initialRatio={{ x: 1, y: 0.4 }} />
