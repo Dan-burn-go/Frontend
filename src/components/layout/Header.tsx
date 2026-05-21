@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Search, Bell, Menu, X } from 'lucide-react';
+import { MapPin, Bell, Menu, X } from 'lucide-react';
+import HomeSearch from './HomeSearch';
 
 const NAV_LINKS = [
   { label: 'Live Map', path: '/' },
@@ -8,7 +9,11 @@ const NAV_LINKS = [
   { label: 'Route Planner', path: '/route' },
 ];
 
-const Header = () => {
+interface HeaderProps {
+  onSearchSelect?: (areaCode: string) => void;
+}
+
+const Header = ({ onSearchSelect }: HeaderProps) => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -40,15 +45,10 @@ const Header = () => {
 
         {/* 우측 영역 */}
         <div className="flex items-center gap-2 sm:gap-4">
-          {/* 검색 (데스크탑) */}
-          <div className="hidden lg:flex items-center gap-2 bg-gray-100 rounded-lg px-4 py-2 w-48 xl:w-64">
-            <Search className="size-4 text-gray-400 shrink-0" />
-            <input
-              type="text"
-              placeholder="Search hotspots..."
-              className="bg-transparent outline-none text-sm w-full"
-            />
-          </div>
+          {/* 검색 (홈, 데스크탑) */}
+          {location.pathname === '/' && onSearchSelect && (
+            <HomeSearch onSelect={onSearchSelect} />
+          )}
 
           {/* 아이콘 (데스크탑) */}
           <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors">
