@@ -1,3 +1,4 @@
+@import 'pretendard/dist/web/variable/pretendardvariable.css';
 @import "tailwindcss";
 
 @layer base {
@@ -8,7 +9,18 @@
   }
 
   body {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      'Pretendard Variable',
+      Pretendard,
+      -apple-system,
+      BlinkMacSystemFont,
+      system-ui,
+      'Apple SD Gothic Neo',
+      'Noto Sans KR',
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+    font-feature-settings: 'ss06';
   }
 }
 
@@ -59,9 +71,24 @@
   animation: marker-bounce 0.9s ease-out;
 }
 
+/* 랭킹 검색 강조: 선택된 순위 행에 잠시 푸른 배경 플래시 (divided 리스트에서 자연스럽게 보이도록 bg 방식) */
+@keyframes ranking-highlight {
+  0% {
+    background-color: rgb(37 99 235 / 0.12);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.ranking-highlight {
+  animation: ranking-highlight 1.6s ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rank-card-hint,
-  .marker-bounce {
+  .marker-bounce,
+  .ranking-highlight {
     animation: none;
   }
 }
