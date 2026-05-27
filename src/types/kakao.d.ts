@@ -22,6 +22,26 @@ declare namespace kakao.maps {
       coord2Address(lng: number, lat: number, callback: Coord2AddressCallback): void;
     }
 
+    // Places: 키워드 기반 장소 검색 (services 라이브러리에 포함)
+    interface PlacesSearchResultItem {
+      id: string;
+      place_name: string;
+      address_name: string;
+      road_address_name: string;
+      x: string; // longitude (string으로 내려옴)
+      y: string; // latitude
+    }
+
+    type PlacesSearchCallback = (
+      result: PlacesSearchResultItem[],
+      status: string,
+      pagination: unknown,
+    ) => void;
+
+    class Places {
+      keywordSearch(query: string, callback: PlacesSearchCallback): void;
+    }
+
     const Status: {
       readonly OK: string;
       readonly ZERO_RESULT: string;
