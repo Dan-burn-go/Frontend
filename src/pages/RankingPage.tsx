@@ -40,12 +40,13 @@ const RankingItem = ({ entry, onClick, focusNonce }: RankingItemProps) => {
       type="button"
       onClick={onClick}
       onAnimationEnd={handleHighlightEnd}
-      className={`w-full text-left cursor-pointer px-7 py-5 flex items-baseline gap-6 hover:bg-slate-50/70 transition-colors ${
+
+      className={`w-full text-left cursor-pointer px-5 sm:px-7 py-4 sm:py-5 flex items-baseline gap-4 sm:gap-6 hover:bg-slate-50/70 transition-colors ${
         shouldHighlight ? 'ranking-highlight' : ''
       }`}
     >
       <span
-        className={`text-4xl font-extrabold tabular-nums tracking-tight w-12 shrink-0 leading-none ${
+        className={`text-3xl sm:text-4xl font-extrabold tabular-nums tracking-tight w-10 sm:w-12 shrink-0 leading-none ${
           entry.rank === 1
             ? 'text-amber-500'
             : entry.rank === 2
@@ -59,7 +60,7 @@ const RankingItem = ({ entry, onClick, focusNonce }: RankingItemProps) => {
       </span>
 
       <div className="flex-1 min-w-0 self-center">
-        <p className="text-lg font-bold text-slate-900 tracking-tight truncate">
+        <p className="text-base sm:text-lg font-bold text-slate-900 tracking-tight truncate">
           {entry.areaName}
         </p>
         <p className="mt-1 text-sm text-slate-500">
@@ -109,10 +110,10 @@ const RankingPage = () => {
   return (
     <div className="flex flex-col w-full min-h-dvh bg-slate-50">
       <Header onSearchSelect={handleSearchSelect} />
-      <div className="max-w-6xl mx-auto w-full px-6 py-10">
+      <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10">
         <button
           onClick={() => navigate('/')}
-          className="cursor-pointer group flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-8 transition-colors"
+          className="cursor-pointer group flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-6 sm:mb-8 transition-colors"
         >
           <CaretLeftIcon
             weight="fill"
@@ -147,7 +148,7 @@ const RankingPage = () => {
           )}
         </div>
 
-        <div className="mt-8 inline-flex gap-1 p-1 bg-slate-100/80 rounded-full">
+        <div className="mt-6 sm:mt-8 inline-flex gap-1 p-1 bg-slate-100/80 rounded-full">
           <button
             onClick={() => handleTabChange('busiest')}
             className={`cursor-pointer px-5 py-2 text-sm font-semibold tracking-tight rounded-full transition ${
@@ -174,7 +175,7 @@ const RankingPage = () => {
           {loading && (
             <div className="divide-y divide-slate-100">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-20 animate-pulse" />
+                <div key={i} className="h-16 sm:h-20 animate-pulse" />
               ))}
             </div>
           )}

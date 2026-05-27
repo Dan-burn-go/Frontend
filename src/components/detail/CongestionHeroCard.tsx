@@ -32,7 +32,7 @@ const CongestionHeroCard = ({
         }}
       />
     </div>
-    <div className="p-8 sm:p-10">
+    <div className="p-6 sm:p-8 lg:p-10">
       <div className="flex items-start justify-between gap-6">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-medium tracking-[0.08em] text-slate-500 mb-3">
@@ -57,7 +57,7 @@ const CongestionHeroCard = ({
           Current Visitors
         </p>
         <div className="flex items-baseline gap-1.5">
-          <p className="text-5xl font-extrabold text-slate-900 tracking-[-0.04em] tabular-nums">
+          <p className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-[-0.04em] tabular-nums">
             {avgPeople.toLocaleString()}
           </p>
           <p className="text-lg font-light text-slate-400">명</p>
