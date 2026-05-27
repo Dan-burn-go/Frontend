@@ -1,8 +1,5 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown, ArrowRight, GripVertical } from 'lucide-react';
-import axios from 'axios';
-import { fetchBusiestRanking, fetchRelaxedRanking } from '../../api/congestionApi';
 import { CONGESTION_LEVEL_MAP, CONGESTION_COLORS, CONGESTION_LABELS } from '../../types/congestion';
 import { useDraggable } from '../../hooks/useDraggable';
 import type { RankingEntry } from '../../types/congestion';
@@ -10,30 +7,14 @@ import type { RankingEntry } from '../../types/congestion';
 interface Props {
   type: 'busiest' | 'relaxed';
   initialRatio: { x: number; y: number };
+  entries: RankingEntry[];
+  loading: boolean;
+  error: boolean;
 }
 
-const CongestionRankCard = ({ type, initialRatio }: Props) => {
+const CongestionRankCard = ({ type, initialRatio, entries, loading, error }: Props) => {
   const navigate = useNavigate();
-  const [entries, setEntries] = useState<RankingEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const { ref, position, scale, isDragging, handleMouseDown } = useDraggable(initialRatio);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const loadData = type === 'busiest' ? fetchBusiestRanking : fetchRelaxedRanking;
-
-    loadData(3, controller.signal)
-      .then((data) => setEntries(data.rankings))
-      .catch((err) => {
-        if (!axios.isCancel(err)) setError(true);
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
-      });
-
-    return () => controller.abort();
-  }, [type]);
 
   const isBusiest = type === 'busiest';
   const title = isBusiest ? 'Peak Congestion' : 'Quiet Getaways';
@@ -44,7 +25,7 @@ const CongestionRankCard = ({ type, initialRatio }: Props) => {
     <div
       ref={ref}
       onMouseDown={handleMouseDown}
-      className="rank-card-hint fixed z-10 bg-white rounded-2xl shadow-2xl border border-gray-200 p-5 w-[16vw] min-w-56 max-w-80 select-none"
+      className="rank-card-hint hidden md:block fixed z-10 bg-white rounded-2xl shadow-2xl border border-gray-200 p-5 w-[16vw] min-w-56 max-w-80 select-none"
       style={{
         left: 0,
         top: 0,
@@ -67,6 +48,8 @@ const CongestionRankCard = ({ type, initialRatio }: Props) => {
         </div>
       ) : error ? (
         <p className="text-xs text-gray-400 text-center py-2">데이터를 불러올 수 없습니다</p>
+      ) : entries.length === 0 ? (
+        <p className="text-xs text-gray-400 text-center py-2">표시할 랭킹이 없어요</p>
       ) : (
         <div className="space-y-3">
           {entries.map((entry, i) => {

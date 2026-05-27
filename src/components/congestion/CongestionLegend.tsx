@@ -7,7 +7,7 @@ const LEGEND = [
 
 const CongestionLegend = () => {
   return (
-    <div className="absolute bottom-6 left-4 md:left-auto md:right-4 z-10 flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg border border-gray-100">
+    <div className="absolute bottom-6 left-4 md:left-auto md:right-4 z-10 h-10 flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-2xl px-4 shadow-lg border border-gray-100">
       {LEGEND.map((item) => (
         <div key={item.label} className="flex items-center gap-1">
           <span className={`w-3 h-3 rounded-full ${item.color}`} />
