@@ -27,13 +27,18 @@ const OriginSearchInput = ({ value, onChange }: Props) => {
   // sdkReady state를 함께 올려, SDK 로드보다 사용자 입력이 빨라도 첫 검색이 silent fail하지 않도록
   // 아래 search effect가 sdkReady 변경 시 재실행되어 pending query를 처리한다.
   useEffect(() => {
+    let active = true;
     waitForKakao(() => {
+      if (!active) return;
       const Places = window.kakao?.maps?.services?.Places;
       if (Places) {
         placesRef.current = new Places();
         setSdkReady(true);
       }
     });
+    return () => {
+      active = false;
+    };
   }, []);
 
   // 디바운스: 입력이 멈춘 뒤에만 검색 호출. 빈 쿼리는 effect 자체를 skip하고
