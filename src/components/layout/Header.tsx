@@ -45,10 +45,8 @@ const Header = ({ onSearchSelect }: HeaderProps) => {
 
         {/* 우측 영역 */}
         <div className="flex items-center gap-2 sm:gap-4">
-          {/* 검색 (홈, 데스크탑) */}
-          {location.pathname === '/' && onSearchSelect && (
-            <HomeSearch onSelect={onSearchSelect} />
-          )}
+          {/* 검색 (데스크탑) — onSearchSelect 받는 페이지에서만 노출 */}
+          {onSearchSelect && <HomeSearch onSelect={onSearchSelect} />}
 
           {/* 아이콘 (데스크탑) */}
           <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors">

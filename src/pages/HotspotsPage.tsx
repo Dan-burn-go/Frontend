@@ -1,29 +1,10 @@
 import { useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  TrendingUp,
-  Search,
-  Sparkles,
-  Coffee,
-  ShoppingBag,
-  Trees,
-  Landmark,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { TrendingUp, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { getLocationImageUrl } from '../data/locations';
-import { CATEGORY_NAMES } from '../data/categories';
+import { CATEGORY_NAMES, CATEGORY_FILTERS } from '../data/categories';
 import { useHotspotsFilter } from '../hooks/useHotspotsFilter';
-import type { FilterCategory } from '../hooks/useHotspotsFilter';
-
-const CATEGORY_FILTERS: { value: FilterCategory; label: string; icon: React.ElementType }[] = [
-  { value: 'all', label: 'All', icon: Sparkles },
-  { value: 'cafe', label: 'Cafe', icon: Coffee },
-  { value: 'shopping', label: 'Shopping', icon: ShoppingBag },
-  { value: 'park', label: 'Park', icon: Trees },
-  { value: 'culture', label: 'Culture', icon: Landmark },
-];
 
 const HotspotsPage = () => {
   const navigate = useNavigate();
@@ -93,18 +74,18 @@ const HotspotsPage = () => {
         </div>
 
         <div className="flex gap-2 mb-8 flex-wrap">
-          {CATEGORY_FILTERS.map(({ value, label, icon: Icon }) => (
+          {CATEGORY_FILTERS.map(({ id, label, Icon }) => (
             <button
-              key={value}
+              key={id}
               type="button"
-              onClick={() => handleCategory(value)}
-              className={`cursor-pointer flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeCategory === value
+              onClick={() => handleCategory(id)}
+              className={`cursor-pointer flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium tracking-tight transition-colors ${
+                activeCategory === id
                   ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
               }`}
             >
-              <Icon size={14} />
+              <Icon size={14} weight="fill" />
               {label}
             </button>
           ))}

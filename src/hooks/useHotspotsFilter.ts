@@ -1,8 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
 import { searchLocationsByName } from '../data/locations';
 import type { LocationCategory } from '../data/locations';
+import type { FilterCategory } from '../data/categories';
 
-export type FilterCategory = LocationCategory | 'all';
+// 단일 진실은 data/categories.ts. 외부 임포트 경로 호환을 위해 re-export
+export type { FilterCategory } from '../data/categories';
 
 const PAGE_SIZE = 12;
 

@@ -1,7 +1,7 @@
 const LEGEND = [
   { label: 'Q', fullLabel: 'QUIET', color: 'bg-green-500' },
-  { label: 'M', fullLabel: 'MODERATE', color: 'bg-orange-400' },
-  { label: 'B', fullLabel: 'BUSY', color: 'bg-yellow-400' },
+  { label: 'M', fullLabel: 'MODERATE', color: 'bg-yellow-400' },
+  { label: 'B', fullLabel: 'BUSY', color: 'bg-orange-400' },
   { label: 'C', fullLabel: 'CROWDED', color: 'bg-red-500' },
 ];
 
