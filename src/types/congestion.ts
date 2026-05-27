@@ -18,8 +18,8 @@ export const CONGESTION_LABELS: Record<CongestionLevel, string> = {
 
 export const CONGESTION_COLORS: Record<CongestionLevel, string> = {
   QUIET: '#22c55e', // green-500
-  MODERATE: '#fb923c', // orange-400
-  BUSY: '#facc15', // yellow-400
+  MODERATE: '#facc15', // yellow-400
+  BUSY: '#fb923c', // orange-400
   CROWDED: '#ef4444', // red-500
 };
 
@@ -69,5 +69,13 @@ export interface PlaceMarker {
   congestionMessage: string;
   minPeopleCount: number;
   maxPeopleCount: number;
+  populationTime: string;
+}
+
+// AI 혼잡 원인 분석 리포트
+export interface AireportResponse {
+  areaCode: string;
+  areaName: string;
+  analysisMessage: string;
   populationTime: string;
 }
