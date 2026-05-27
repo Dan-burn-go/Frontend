@@ -45,7 +45,7 @@ export const cleanSubwayName = (name: string | null | undefined): string | null 
  */
 export const resolveSubwayColor = (name: string | null | undefined): string => {
   if (!name) return DEFAULT_SUBWAY_COLOR;
-  const cleaned = name.replace(/\s+/g, '');
+  const cleaned = name.replace(/[\s.·\-]/g, '');
   if (SUBWAY_LINE_COLORS[cleaned]) return SUBWAY_LINE_COLORS[cleaned];
   for (const [key, color] of Object.entries(SUBWAY_LINE_COLORS)) {
     if (cleaned.includes(key)) return color;
