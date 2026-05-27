@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CustomOverlayMap } from 'react-kakao-maps-sdk';
 import { X } from 'lucide-react';
 import { CONGESTION_COLORS, CONGESTION_LABELS } from '../../types/congestion';
 import { CATEGORY_NAMES } from '../../data/categories';
+import { useOneShotPulse } from '../../hooks/useOneShotPulse';
 import MarkerPin from './MarkerPin';
 import { calcMarkerSize } from './markerUtils';
 import type { PlaceMarker } from '../../types/congestion';
@@ -33,9 +33,8 @@ const CongestionMarker = ({
   const size = calcMarkerSize(level);
   const avgPeople = Math.round((marker.minPeopleCount + marker.maxPeopleCount) / 2);
 
-  // 검색 선택 시 한 번만 튀도록: 애니메이션을 끝낸 nonce를 기록해 그 외 리렌더(줌 등)에서는 재생 안 함
-  const [finishedNonce, setFinishedNonce] = useState<number | null>(null);
-  const shouldBounce = bounceNonce != null && bounceNonce !== finishedNonce;
+  // 검색 선택 시 한 번만 튀도록: 줌 등 리렌더에서는 재생 안 함
+  const { active: shouldBounce, onAnimationEnd: handleBounceEnd } = useOneShotPulse(bounceNonce);
 
   return (
     <>
@@ -47,7 +46,7 @@ const CongestionMarker = ({
             }`}
             style={{ filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.3))' }}
             onClick={onOpen}
-            onAnimationEnd={() => setFinishedNonce(bounceNonce ?? null)}
+            onAnimationEnd={handleBounceEnd}
           >
             <MarkerPin color={color} size={size} />
           </div>
@@ -96,12 +95,14 @@ const CongestionMarker = ({
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <button
-                  onClick={() => onAlternativeRequest(marker)}
-                  className="cursor-pointer w-full py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-semibold transition-colors"
-                >
-                  대체지역 추천
-                </button>
+                {marker.congestionLevel !== 'QUIET' && (
+                  <button
+                    onClick={() => onAlternativeRequest(marker)}
+                    className="cursor-pointer w-full py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-semibold transition-colors"
+                  >
+                    대체지역 추천
+                  </button>
+                )}
                 <button
                   onClick={() => navigate(`/place/${marker.areaCode}`, { state: { marker } })}
                   className="cursor-pointer w-full py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold transition-colors"
