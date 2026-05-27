@@ -41,10 +41,13 @@ const CongestionMarker = ({
       {!isOpen && (
         <CustomOverlayMap position={position} yAnchor={1}>
           <div
-            className={`cursor-pointer flex flex-col items-center hover:scale-110 active:scale-95 transition-transform ${
+            className={`cursor-pointer flex flex-col items-center hover:scale-110 active:scale-95 transition-transform duration-200 ${
               shouldBounce ? 'marker-bounce' : ''
             }`}
-            style={{ filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.3))' }}
+            style={{
+              filter:
+                'drop-shadow(0 1px 2px rgba(0,0,0,0.12)) drop-shadow(0 4px 10px rgba(15,23,42,0.15))',
+            }}
             onClick={onOpen}
             onAnimationEnd={handleBounceEnd}
           >
