@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage';
 import DetailPage from './pages/DetailPage';
 import RankingPage from './pages/RankingPage';
 import HotspotsPage from './pages/HotspotsPage';
+import RoutePlannerPage from './pages/RoutePlannerPage';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/place/:placeId" element={<DetailPage />} />
       <Route path="/ranking" element={<RankingPage />} />
       <Route path="/hotspots" element={<HotspotsPage />} />
+      <Route path="/route" element={<RoutePlannerPage />} />
     </Routes>
   );
 }
