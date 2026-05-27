@@ -20,26 +20,39 @@ const SourceMarker = ({ marker, level }: Props) => {
   return (
     <CustomOverlayMap position={position} yAnchor={1} zIndex={5}>
       <div
-        className="cursor-pointer flex flex-col items-center hover:scale-110 active:scale-95 transition-transform"
-        style={{ filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.4))' }}
+        className="cursor-pointer flex flex-col items-center hover:scale-105 active:scale-95 transition-transform duration-200"
+        style={{
+          filter:
+            'drop-shadow(0 1px 2px rgba(0,0,0,0.12)) drop-shadow(0 6px 14px rgba(15,23,42,0.18))',
+        }}
         onClick={() => navigate(`/place/${marker.areaCode}`, { state: { marker } })}
       >
         <div className="relative flex flex-col items-center">
-          <div
-            className="absolute animate-ping rounded-full opacity-20"
+          {/* 단일 펄스 — 강조는 형태가 아니라 움직임으로 */}
+          <span
+            className="absolute animate-ping rounded-full"
             style={{
               backgroundColor: color,
-              width: size * 0.85 + 12,
-              height: size * 0.85 + 12,
-              top: -6,
+              opacity: 0.22,
+              width: size * 1.1,
+              height: size * 1.1,
+              top: -size * 0.1,
               left: '50%',
               transform: 'translateX(-50%)',
+              animationDuration: '2.4s',
             }}
           />
           <MarkerPin color={color} size={size} />
         </div>
         <div className="mt-1.5 flex flex-col items-center gap-1">
-          <span className="text-[9px] text-white font-bold rounded-full px-2 py-0.5 bg-gray-700 whitespace-nowrap">
+          <span
+            className="inline-flex items-center text-[10px] font-semibold rounded-full px-2.5 py-0.5 text-white whitespace-nowrap"
+            style={{
+              backgroundColor: '#0f172a',
+              letterSpacing: '0.04em',
+              boxShadow: '0 1px 3px rgba(15, 23, 42, 0.25)',
+            }}
+          >
             선택한 장소
           </span>
           <MarkerLabel color={color} name={marker.name} size={size} />
