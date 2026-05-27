@@ -46,7 +46,9 @@ export const useAddress = (latitude: number | null, longitude: number | null): S
       return;
     }
 
-    // setState는 모두 비동기 콜백 안 (kakao.maps.load / Kakao 지오코더) — effect body 동기 호출 없음
+    // 다른 좌표로 이동했을 때 이전 주소가 잠깐 노출되는 stale 표시 방지
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setState({ status: 'loading' });
     waitForKakao(
       () => {
         if (cancelled) return;
