@@ -20,13 +20,19 @@ const OriginSearchInput = ({ value, onChange }: Props) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<kakao.maps.services.PlacesSearchResultItem[]>([]);
   const [open, setOpen] = useState(false);
+  const [sdkReady, setSdkReady] = useState(false);
   const placesRef = useRef<kakao.maps.services.Places | null>(null);
 
-  // SDK 준비되면 Places 인스턴스를 한 번만 생성해 재사용
+  // SDK 준비되면 Places 인스턴스를 한 번만 생성해 재사용.
+  // sdkReady state를 함께 올려, SDK 로드보다 사용자 입력이 빨라도 첫 검색이 silent fail하지 않도록
+  // 아래 search effect가 sdkReady 변경 시 재실행되어 pending query를 처리한다.
   useEffect(() => {
     waitForKakao(() => {
       const Places = window.kakao?.maps?.services?.Places;
-      if (Places) placesRef.current = new Places();
+      if (Places) {
+        placesRef.current = new Places();
+        setSdkReady(true);
+      }
     });
   }, []);
 
@@ -34,7 +40,7 @@ const OriginSearchInput = ({ value, onChange }: Props) => {
   // 표시 시점에 derive(query 비면 빈 배열 표시)하여 동기 setState를 피한다.
   // active flag로 언마운트/dep 변경 후 kakao 콜백이 stale setState 호출하는 것 차단.
   useEffect(() => {
-    if (!query.trim() || value) return;
+    if (!query.trim() || value || !sdkReady) return;
     let active = true;
     const timer = window.setTimeout(() => {
       if (!active) return;
@@ -50,7 +56,7 @@ const OriginSearchInput = ({ value, onChange }: Props) => {
       active = false;
       window.clearTimeout(timer);
     };
-  }, [query, value]);
+  }, [query, value, sdkReady]);
 
   const visibleResults = query.trim() && !value ? results : [];
 
