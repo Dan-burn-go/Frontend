@@ -32,14 +32,14 @@ const AiInsightCard = ({ areaCode }: Props) => {
       {state.status === 'stale' && <PlaceholderCard message={AI_STATE_MESSAGES.stale} />}
       {state.status === 'error' && <PlaceholderCard message={AI_STATE_MESSAGES.error} />}
       {state.status === 'success' && (
-        <div className="relative overflow-hidden rounded-2xl shadow-sm border border-slate-100 bg-white px-8 sm:px-12 py-10 sm:py-12">
+        <div className="relative overflow-hidden rounded-2xl shadow-sm border border-slate-100 bg-white px-6 sm:px-8 lg:px-12 py-8 sm:py-10 lg:py-12">
           <div
             className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full bg-gradient-to-br from-blue-300/25 to-blue-100/10 blur-3xl"
             aria-hidden
           />
 
           <span
-            className="pointer-events-none select-none absolute -left-2 -top-8 text-[140px] font-extrabold text-blue-100 leading-none"
+            className="pointer-events-none select-none absolute -left-2 -top-8 text-[100px] sm:text-[140px] font-extrabold text-blue-100 leading-none"
             aria-hidden
           >
             &ldquo;

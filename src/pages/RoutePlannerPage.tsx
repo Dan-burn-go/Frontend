@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CaretLeftIcon } from '@phosphor-icons/react';
-import { ArrowRight } from 'lucide-react';
+import { CaretLeftIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import Header from '../components/layout/Header';
 import OriginSearchInput from '../components/route/OriginSearchInput';
 import type { OriginSelection } from '../components/route/OriginSearchInput';
@@ -70,10 +69,10 @@ const RoutePlannerPage = () => {
           style={{ background: 'radial-gradient(circle, #EDE9FE 0%, transparent 70%)' }}
         />
 
-        <div className="relative max-w-6xl mx-auto w-full px-6 py-10">
+        <div className="relative max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10">
           <button
             onClick={() => navigate('/')}
-            className="cursor-pointer group flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-10 transition-colors"
+            className="cursor-pointer group flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-6 sm:mb-10 transition-colors"
           >
             <CaretLeftIcon
               weight="fill"
@@ -94,7 +93,7 @@ const RoutePlannerPage = () => {
               </span>
             </div>
 
-            <h1 className="text-[40px] sm:text-[48px] font-semibold text-slate-900 tracking-[-0.03em] leading-[1.05]">
+            <h1 className="text-[32px] sm:text-[48px] font-semibold text-slate-900 tracking-[-0.03em] leading-[1.05]">
               어디로 가볼까요?
             </h1>
             <p className="mt-3 text-[15px] text-slate-500 leading-relaxed">
@@ -103,8 +102,8 @@ const RoutePlannerPage = () => {
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6">
-            <div className="bg-white rounded-3xl ring-1 ring-slate-100 p-6 h-fit lg:sticky lg:top-24 shadow-[0_4px_24px_-12px_rgb(15,23,42,0.08)] transition-shadow hover:shadow-[0_8px_32px_-12px_rgb(15,23,42,0.12)]">
+          <div className="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6">
+            <div className="bg-white rounded-3xl ring-1 ring-slate-100 p-5 sm:p-6 h-fit lg:sticky lg:top-24 shadow-[0_4px_24px_-12px_rgb(15,23,42,0.08)] transition-shadow hover:shadow-[0_8px_32px_-12px_rgb(15,23,42,0.12)]">
               <h2 className="text-sm font-semibold text-slate-900 tracking-tight mb-5">
                 경로 입력
               </h2>
@@ -135,7 +134,7 @@ const RoutePlannerPage = () => {
                 ) : (
                   <>
                     <span>경로 찾기</span>
-                    <ArrowRight className="size-4" strokeWidth={2} />
+                    <ArrowRightIcon className="size-4" weight="bold" />
                   </>
                 )}
               </button>
@@ -145,7 +144,7 @@ const RoutePlannerPage = () => {
               {destAreaCode && <DestinationPreviewCard areaCode={destAreaCode} />}
 
               {state.status === 'idle' && (
-                <div className="bg-white rounded-3xl ring-1 ring-slate-100 py-16 px-6 flex flex-col items-center justify-center text-center shadow-[0_4px_24px_-16px_rgb(15,23,42,0.06)]">
+                <div className="bg-white rounded-3xl ring-1 ring-slate-100 py-12 sm:py-16 px-6 flex flex-col items-center justify-center text-center shadow-[0_4px_24px_-16px_rgb(15,23,42,0.06)]">
                   <RouteIllustration className="w-32 h-auto mb-6" />
                   <p className="text-base font-semibold text-slate-900 tracking-tight">
                     {destAreaCode ? '출발지만 알려주시면 돼요' : '어디서 출발하시나요?'}
@@ -178,7 +177,7 @@ const RoutePlannerPage = () => {
               )}
 
               {state.status === 'empty' && (
-                <div className="bg-white rounded-3xl ring-1 ring-slate-100 py-16 text-center">
+                <div className="bg-white rounded-3xl ring-1 ring-slate-100 py-12 sm:py-16 text-center">
                   <p className="text-sm font-semibold text-slate-900">
                     추천 가능한 경로가 없어요
                   </p>
@@ -189,7 +188,7 @@ const RoutePlannerPage = () => {
               )}
 
               {state.status === 'error' && (
-                <div className="bg-white rounded-3xl ring-1 ring-slate-100 py-16 text-center">
+                <div className="bg-white rounded-3xl ring-1 ring-slate-100 py-12 sm:py-16 text-center">
                   <p className="text-sm font-semibold text-slate-900">경로를 불러올 수 없어요</p>
                   <p className="mt-1.5 text-sm text-slate-500">잠시 후 다시 시도해주세요</p>
                 </div>

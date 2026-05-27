@@ -1,6 +1,11 @@
 import { useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { TrendingUp, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  TrendUpIcon,
+  MagnifyingGlassIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+} from '@phosphor-icons/react';
 import Header from '../components/layout/Header';
 import { getLocationImageUrl } from '../data/locations';
 import { CATEGORY_NAMES, CATEGORY_FILTERS } from '../data/categories';
@@ -41,27 +46,33 @@ const HotspotsPage = () => {
   return (
     <div className="flex flex-col w-full min-h-dvh bg-gray-50">
       <Header />
-      <div className="max-w-7xl mx-auto w-full px-6 py-8">
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8">
         <div className="flex items-start justify-between mb-6">
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <TrendingUp size={22} className="text-blue-600" />
-              <h1 className="text-3xl font-bold text-gray-900">서울 핫플레이스</h1>
+              <TrendUpIcon size={20} weight="fill" className="text-blue-600" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+                서울 핫플레이스
+              </h1>
             </div>
-            <p className="text-base text-gray-500">
+            <p className="text-sm sm:text-base text-gray-500">
               서울 주요 핫플레이스{' '}
               <span className="text-blue-600 font-medium">{filteredCount}곳</span>의 정보를
               제공합니다
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-green-500 font-medium mt-1">
+          <div className="hidden sm:flex items-center gap-1.5 text-sm text-green-500 font-medium mt-1 shrink-0">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             실시간
           </div>
         </div>
 
         <div className="relative mb-4">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <MagnifyingGlassIcon
+            size={16}
+            weight="bold"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          />
           <input
             type="text"
             value={inputValue}
@@ -107,7 +118,7 @@ const HotspotsPage = () => {
                     <img
                       src={getLocationImageUrl(loc.name)}
                       alt={loc.name}
-                      className="w-full h-52 object-cover"
+                      className="w-full h-44 sm:h-52 object-cover"
                       onError={(e) => {
                         e.currentTarget.style.visibility = 'hidden';
                       }}
@@ -116,8 +127,10 @@ const HotspotsPage = () => {
                       {CATEGORY_NAMES[loc.category]}
                     </span>
                   </div>
-                  <div className="p-5">
-                    <h2 className="text-lg font-bold text-gray-900 mb-2">{loc.name}</h2>
+                  <div className="p-4 sm:p-5">
+                    <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2 tracking-tight">
+                      {loc.name}
+                    </h2>
                     <span className="text-sm text-blue-500 font-medium">
                       #{CATEGORY_NAMES[loc.category]}
                     </span>
@@ -134,7 +147,7 @@ const HotspotsPage = () => {
                   disabled={currentPage === 1}
                   className="cursor-pointer p-2 rounded-lg text-gray-400 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  <ChevronLeft size={18} />
+                  <CaretLeftIcon size={16} weight="bold" />
                 </button>
 
                 {pageNumbers.map((page, i) =>
@@ -167,7 +180,7 @@ const HotspotsPage = () => {
                   disabled={currentPage === totalPages}
                   className="cursor-pointer p-2 rounded-lg text-gray-400 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  <ChevronRight size={18} />
+                  <CaretRightIcon size={16} weight="bold" />
                 </button>
               </div>
             )}

@@ -52,7 +52,7 @@ const DetailPage = () => {
   return (
     <div className="flex flex-col w-full min-h-dvh bg-slate-50">
       <Header onSearchSelect={(areaCode) => navigate(`/place/${areaCode}`)} />
-      <div className="max-w-6xl mx-auto w-full px-6 py-6">
+      <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6">
         <button
           onClick={() => navigate('/')}
           className="cursor-pointer group flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-6 transition-colors"
