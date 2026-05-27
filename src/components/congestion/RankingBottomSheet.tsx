@@ -173,8 +173,13 @@ const RankingBottomSheet = ({ busiest, relaxed, loading, error }: Props) => {
       >
         <button
           type="button"
-          onClick={() => setOpen(false)}
           {...touchHandlers}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setOpen(false);
+            }
+          }}
           aria-label="시트 닫기"
           className="cursor-pointer w-full flex justify-center pt-3 pb-2 touch-none"
         >
