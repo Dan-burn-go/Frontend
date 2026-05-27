@@ -15,6 +15,10 @@ export const useAlternativeLocations = (areaCode: string | null) => {
   useEffect(() => {
     if (!areaCode) return;
 
+    // 다른 장소로 이동했을 때 이전 대체장소 목록이 잠깐 노출되는 stale 표시 방지
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setState({ status: 'loading' });
+
     const controller = new AbortController();
 
     fetchAlternativeLocations(areaCode, controller.signal)
