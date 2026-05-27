@@ -51,9 +51,11 @@ export const useTopRankings = (limit: number) => {
         }
       })
       .catch((err) => {
-        if (!axios.isCancel(err)) {
-          dispatch({ type: 'error' });
-        }
+        // abort 후 미세 타이밍에 CancelError가 아닌 형태로 reject되는 케이스(네트워크 race)
+        // 까지 차단해, 언마운트된 컴포넌트에 dispatch가 도달하지 않도록 함.
+        if (controller.signal.aborted) return;
+        if (axios.isCancel(err)) return;
+        dispatch({ type: 'error' });
       });
 
     return () => controller.abort();

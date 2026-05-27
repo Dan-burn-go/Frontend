@@ -36,6 +36,9 @@ export const useSwipeDown = ({ threshold = 80, onDismiss }: Options) => {
       updateDragY(Math.max(0, dy));
     },
     onTouchEnd: () => {
+      // touchstart 없이 touchend만 들어오는 엣지(멀티터치 간섭 등)에서 dragYRef=0이
+      // tap으로 오판돼 의도치 않게 onDismiss가 호출되는 것 방지.
+      if (startYRef.current == null) return;
       const movement = dragYRef.current;
       const isTap = movement < TAP_SLOP;
       const passedThreshold = movement > threshold;
