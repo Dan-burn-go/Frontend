@@ -14,7 +14,8 @@ export const useCongestionMarkers = (): PlaceMarker[] => {
   const prevPopulationTimeRef = useRef<string | null>(null);
 
   // 응답의 populationTime이 직전과 다르면 새 데이터로 보고 markers 갱신.
-  // 반환값으로 "새 데이터를 받았는지"를 알려 호출자가 다음 폴링 주기를 결정한다.
+  // 반환값으로 "백엔드 갱신 위상과 동기화됐는지"를 알려 호출자가 다음 폴링 주기를 결정한다.
+  // 첫 load는 백엔드 갱신 직후라는 보장이 없어 false 반환 → 60초 후 재시도로 위상 동기화.
   const load = useCallback(async (): Promise<boolean> => {
     try {
       const data = await fetchAllCongestion();
@@ -22,6 +23,8 @@ export const useCongestionMarkers = (): PlaceMarker[] => {
 
       const latestTime = data[0].populationTime;
       if (latestTime === prevPopulationTimeRef.current) return false;
+
+      const isFirstLoad = prevPopulationTimeRef.current === null;
 
       const result: PlaceMarker[] = [];
       for (const item of data) {
@@ -47,7 +50,7 @@ export const useCongestionMarkers = (): PlaceMarker[] => {
       }
       setMarkers(result);
       prevPopulationTimeRef.current = latestTime;
-      return true;
+      return !isFirstLoad;
     } catch (err) {
       console.error('[useCongestionMarkers] 혼잡도 데이터 로드 실패:', err);
       return false;
