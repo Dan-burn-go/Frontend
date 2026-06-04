@@ -1,63 +1,65 @@
-# Dan-burn-go Frontend
+# 단번에 (Dan-burn-go)
 
-  > 서울 주요 관광지 122곳의 **실시간 혼잡도**를 지도 위에 시각화하고, AI 기반 혼잡 원인 분석과 대체 장소·교통 경로를 안내하는 React 웹 프론트엔드
+> 서울 주요 관광지의 **실시간 혼잡도**를 한눈에 확인하고, AI 분석을 바탕으로 더 나은 장소와 경로를 안내하는 웹 서비스
 
-  ---
+🔗 **Live**: [goseoul.today](https://goseoul.today)
 
-  ## Tech Stack
+---
 
-  ![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
-  ![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)
-  ![Vite](https://img.shields.io/badge/Vite_7-646CFF?style=flat-square&logo=vite&logoColor=white)
-  ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+서울에서 어디로 갈지 망설여질 때 도움이 되는 서비스입니다.
+지도 위에서 지금 사람이 몰리는 곳과 여유로운 곳을 색으로 구분해 보여주고,
+가고 싶은 장소가 붐비면 가까운 대체 장소를, 출발하기 전이라면 도착지의 혼잡도를 미리 알려줍니다.
 
-  ---
+---
 
-  ## Key Features
+## Tech Stack
 
-  ### 1. 실시간 혼잡도 지도
-  - 카카오맵 위에 122개 관광지 혼잡도 마커 시각화
-  - 카테고리 필터로 관심 장소 분류 조회
-  - 혼잡도 단계(여유 / 보통 / 약간 붐빔 / 붐빔)를 색상 범례로 안내
+![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite_7-646CFF?style=flat-square&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 
-  ### 2. 장소 상세 페이지
-  - 선택 장소의 현재 혼잡도 수치 및 AI 분석 원인 표시
-  - 반경 2km 이내 대체 장소 목록 및 소요 시간 안내
-  - 교통 경로(버스) 추천
+---
 
-  ### 3. 혼잡도 랭킹
-  - 혼잡도 기준 실시간 장소 순위 제공
+## Key Features
 
-  ---
+### 실시간 혼잡도 지도
+- 서울 주요 관광지 **121곳**의 현재 혼잡도를 카카오맵 위에 색상 마커로 표시
+- 카테고리(공원·카페·쇼핑·문화) 필터와 키워드 검색으로 원하는 장소를 빠르게 탐색
+- 지금 가장 붐비는 곳과 여유로운 곳을 TOP 3로 노출
+- 마커를 누르면 반경 2km 이내 덜 붐비는 대체 장소를 즉시 추천
 
-  ## Project Structure
+### 장소 상세
+- 선택한 장소의 현재 혼잡도, 평균 방문 인원, 갱신 시간을 한 화면에 정리
+- AI가 분석한 혼잡 원인과 맥락 제공
+- 주변에서 열리고 있는 문화 행사 정보 함께 노출
+- 혼잡한 장소라면 가까운 대체 장소를 함께 안내
 
-```
-src/
-├── api/              # Axios 기반 API 호출 모듈
-├── components/
-│   ├── congestion/   # 혼잡도 범례, 배지 등 UI 컴포넌트
-│   ├── filter/       # 카테고리 필터
-│   ├── layout/       # Header 등 공통 레이아웃
-│   └── map/          # KakaoMap, MapControls 컴포넌트
-├── hooks/            # 커스텀 훅
-├── pages/
-│   ├── HomePage.tsx      # 메인 지도 페이지 (/)
-│   ├── DetailPage.tsx    # 장소 상세 페이지 (/place/:placeId)
-│   └── RankingPage.tsx   # 혼잡도 랭킹 페이지 (/ranking)
-├── types/            # TypeScript 타입 정의
-└── data/             # 정적 데이터
-```
+### 혼잡도 랭킹
+- 서울 주요 장소를 혼잡도 높은 순 · 낮은 순으로 정렬한 실시간 순위
+- 카테고리, 평균 방문 인원, 혼잡도 단계를 한 카드에 정리
+- 검색으로 특정 장소를 랭킹 안에서 바로 찾아갈 수 있음
+
+### 핫스팟 탐색
+- 121곳을 사진과 카테고리 태그로 둘러보는 카드 그리드
+- 키워드 검색과 카테고리 필터로 원하는 장소를 빠르게 좁혀가기
+
+### 경로 추천
+- 출발지와 도착지를 입력하면 도보·버스·지하철을 조합한 경로 안내
+- 도착지의 현재 혼잡도를 미리 보고 출발 여부 판단 가능
+- 여러 경로 중 가장 빠른 길을 우선 노출, 단계별 타임라인으로 안내
+
+---
+
 ## Getting Started
 
-### 설치 및 실행
-```
-# 의존성 설치
+```bash
+# 1. 의존성 설치
 npm install
 
-# 개발 서버 실행
-npm run dev
+# 2. 환경 변수 설정 (.env 파일에 카카오맵 JavaScript 키 입력 — https://developers.kakao.com 에서 발급)
+cp .env.example .env
 
-# 빌드
-npm run build
+# 3. 개발 서버 실행
+npm run dev
 ```
