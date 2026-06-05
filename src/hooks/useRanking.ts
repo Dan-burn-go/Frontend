@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
+import axios from 'axios';
 import { fetchBusiestRanking, fetchRelaxedRanking } from '../api/congestionApi';
 import type { RankingEntry } from '../types/congestion';
 
@@ -34,38 +35,44 @@ export const useRanking = (tab: 'busiest' | 'relaxed') => {
   });
   const prevPopulationTimeRef = useRef<string | null>(null);
 
-  const load = useCallback(async (): Promise<boolean> => {
-    try {
-      const loadData = tab === 'busiest' ? fetchBusiestRanking : fetchRelaxedRanking;
-      const data = await loadData(RANKING_LIMIT);
-      const latestTime = data.rankings[0]?.populationTime ?? null;
-      if (latestTime === null) return false;
-      if (latestTime === prevPopulationTimeRef.current) return false;
-      const isFirstLoad = prevPopulationTimeRef.current === null;
-      dispatch({ type: 'success', entries: data.rankings });
-      prevPopulationTimeRef.current = latestTime;
-      return !isFirstLoad;
-    } catch (err) {
-      // 폴링 중 일시 실패는 직전 데이터 유지, 첫 load 실패만 error 노출
-      if (prevPopulationTimeRef.current === null) {
-        dispatch({ type: 'error' });
-      } else {
-        console.error('[useRanking] 폴링 중 로드 실패:', err);
+  const load = useCallback(
+    async (signal: AbortSignal): Promise<boolean> => {
+      try {
+        const loadData = tab === 'busiest' ? fetchBusiestRanking : fetchRelaxedRanking;
+        const data = await loadData(RANKING_LIMIT, signal);
+        if (signal.aborted) return false;
+        const latestTime = data.rankings[0]?.populationTime ?? null;
+        if (latestTime === null) return false;
+        if (latestTime === prevPopulationTimeRef.current) return false;
+        const isFirstLoad = prevPopulationTimeRef.current === null;
+        dispatch({ type: 'success', entries: data.rankings });
+        prevPopulationTimeRef.current = latestTime;
+        return !isFirstLoad;
+      } catch (err) {
+        if (axios.isCancel(err) || signal.aborted) return false;
+        // 폴링 중 일시 실패는 직전 데이터 유지, 첫 load 실패만 error 노출
+        if (prevPopulationTimeRef.current === null) {
+          dispatch({ type: 'error' });
+        } else {
+          console.error('[useRanking] 폴링 중 로드 실패:', err);
+        }
+        return false;
       }
-      return false;
-    }
-  }, [tab]);
+    },
+    [tab],
+  );
 
   useEffect(() => {
     // tab 전환 시 직전 시각과 비교되지 않도록 리셋
     prevPopulationTimeRef.current = null;
     dispatch({ type: 'reset' });
+    const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
     let cancelled = false;
 
     const tick = async () => {
       if (cancelled) return;
-      const changed = await load();
+      const changed = await load(controller.signal);
       if (cancelled) return;
       timer = setTimeout(tick, changed ? FRESH_INTERVAL : RETRY_INTERVAL);
     };
@@ -74,6 +81,7 @@ export const useRanking = (tab: 'busiest' | 'relaxed') => {
 
     return () => {
       cancelled = true;
+      controller.abort();
       if (timer) clearTimeout(timer);
     };
   }, [load]);
