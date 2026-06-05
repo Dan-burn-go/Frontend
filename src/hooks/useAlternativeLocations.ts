@@ -1,7 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { fetchAlternativeLocations } from '../api/mapApi';
 import type { AlternativeLocation } from '../types/map';
+
+// 백엔드 응답(AlternativeLocation[])에 시각 정보가 없어 useCongestionMarkers의 changed 판정
+// (populationTime 비교)을 적용할 수 없으므로 5분 고정 폴링으로 fallback한다.
+// 응답 스키마 보강(populationTime 추가)은 별도 백엔드 이슈로 분리.
+const POLL_INTERVAL = 5 * 60 * 1000;
 
 type State =
   | { status: 'loading' }
@@ -11,6 +16,7 @@ type State =
 
 export const useAlternativeLocations = (areaCode: string | null) => {
   const [state, setState] = useState<State>({ status: 'loading' });
+  const hasLoadedRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (!areaCode) return;
@@ -18,19 +24,43 @@ export const useAlternativeLocations = (areaCode: string | null) => {
     // 다른 장소로 이동했을 때 이전 대체장소 목록이 잠깐 노출되는 stale 표시 방지
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setState({ status: 'loading' });
+    hasLoadedRef.current = false;
 
     const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
 
-    fetchAlternativeLocations(areaCode, controller.signal)
-      .then((data) => {
-        if (controller.signal.aborted) return;
+    const load = async () => {
+      try {
+        const data = await fetchAlternativeLocations(areaCode, controller.signal);
+        if (cancelled || controller.signal.aborted) return;
         setState(data.length === 0 ? { status: 'empty' } : { status: 'success', data });
-      })
-      .catch((err) => {
-        if (!axios.isCancel(err)) setState({ status: 'error' });
-      });
+        hasLoadedRef.current = true;
+      } catch (err) {
+        if (cancelled || controller.signal.aborted || axios.isCancel(err)) return;
+        // 폴링 중 일시 실패는 직전 데이터 유지, 첫 load 실패만 error 노출
+        if (!hasLoadedRef.current) {
+          setState({ status: 'error' });
+        } else {
+          console.error('[useAlternativeLocations] 폴링 중 로드 실패:', err);
+        }
+      }
+    };
 
-    return () => controller.abort();
+    const tick = async () => {
+      if (cancelled) return;
+      await load();
+      if (cancelled) return;
+      timer = setTimeout(tick, POLL_INTERVAL);
+    };
+
+    tick();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+      if (timer) clearTimeout(timer);
+    };
   }, [areaCode]);
 
   return state;
