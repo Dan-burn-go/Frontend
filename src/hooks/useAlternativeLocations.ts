@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import { fetchAlternativeLocations } from '../api/mapApi';
 import type { AlternativeLocation } from '../types/map';
 
@@ -25,17 +26,18 @@ export const useAlternativeLocations = (areaCode: string | null) => {
     setState({ status: 'loading' });
     hasLoadedRef.current = false;
 
+    const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
     let cancelled = false;
 
     const load = async () => {
       try {
-        const data = await fetchAlternativeLocations(areaCode);
-        if (cancelled) return;
+        const data = await fetchAlternativeLocations(areaCode, controller.signal);
+        if (cancelled || controller.signal.aborted) return;
         setState(data.length === 0 ? { status: 'empty' } : { status: 'success', data });
         hasLoadedRef.current = true;
       } catch (err) {
-        if (cancelled) return;
+        if (cancelled || controller.signal.aborted || axios.isCancel(err)) return;
         // 폴링 중 일시 실패는 직전 데이터 유지, 첫 load 실패만 error 노출
         if (!hasLoadedRef.current) {
           setState({ status: 'error' });
@@ -56,6 +58,7 @@ export const useAlternativeLocations = (areaCode: string | null) => {
 
     return () => {
       cancelled = true;
+      controller.abort();
       if (timer) clearTimeout(timer);
     };
   }, [areaCode]);
