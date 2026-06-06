@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { fetchAiReport } from '../api/congestionApi';
 import type { AireportResponse } from '../types/congestion';
+
+type Selected =
+  | { kind: 'success'; data: AireportResponse }
+  | { kind: 'stale' };
 
 type State =
   | { status: 'loading' }
@@ -12,6 +16,12 @@ type State =
 
 // 분석이 현재 시간대와 어긋나면 보여주지 않기 위한 허용 폭 (±N시간)
 const HOUR_TOLERANCE = 3;
+
+// 백엔드 AI 리포트는 혼잡도 변화 이벤트 기반으로 생성되어 fixed 갱신 주기가 없고
+// Redis TTL이 3시간. 짧은 재방문은 캐시 hit, 장시간 체류는 visibility 기반 polling,
+// 탭 복귀는 refetchOnWindowFocus로 한 번에 커버한다.
+const STALE_TIME = 5 * 60 * 1000; // 5분
+const REFETCH_INTERVAL = 5 * 60 * 1000; // 5분
 
 // "2026-05-24 12:30" → 12
 const parseHour = (populationTime: string): number | null => {
@@ -40,41 +50,38 @@ const getSeoulHour = (): number => {
   }
 };
 
-export const useAiReport = (areaCode: string | null) => {
-  const [state, setState] = useState<State>({ status: 'loading' });
+export const useAiReport = (areaCode: string | null): State => {
+  const query = useQuery<AireportResponse, Error, Selected>({
+    queryKey: ['ai-report', areaCode],
+    queryFn: ({ signal }) => fetchAiReport(areaCode!, signal),
+    enabled: !!areaCode,
+    staleTime: STALE_TIME,
+    refetchInterval: REFETCH_INTERVAL,
+    // 다른 탭이 활성화된 동안엔 polling 차단 — 사용자가 보지 않는 페이지로 트래픽 낭비 X
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
+    retry: (count, err) => {
+      // 404는 비즈니스적 'empty'라 재시도 X
+      if (axios.isAxiosError(err) && err.response?.status === 404) return false;
+      return count < 1;
+    },
+    select: (data) => {
+      const reportHour = parseHour(data.populationTime);
+      if (reportHour == null) return { kind: 'success', data };
+      const diff = circularHourDiff(reportHour, getSeoulHour());
+      return diff > HOUR_TOLERANCE ? { kind: 'stale' } : { kind: 'success', data };
+    },
+  });
 
-  useEffect(() => {
-    if (!areaCode) return;
-
-    // 다른 장소로 이동했을 때 이전 분석이 잠깐 노출되는 stale 표시 방지
-    // (콜백 안 setState만 룰 적용 대상이라, 동기 reset 한 줄은 명시적으로 허용)
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setState({ status: 'loading' });
-
-    const controller = new AbortController();
-
-    fetchAiReport(areaCode, controller.signal)
-      .then((data) => {
-        if (controller.signal.aborted) return;
-        const reportHour = parseHour(data.populationTime);
-        if (reportHour == null) {
-          setState({ status: 'success', data });
-          return;
-        }
-        const diff = circularHourDiff(reportHour, getSeoulHour());
-        setState(diff > HOUR_TOLERANCE ? { status: 'stale' } : { status: 'success', data });
-      })
-      .catch((err) => {
-        if (axios.isCancel(err)) return;
-        setState(
-          axios.isAxiosError(err) && err.response?.status === 404
-            ? { status: 'empty' }
-            : { status: 'error' },
-        );
-      });
-
-    return () => controller.abort();
-  }, [areaCode]);
-
-  return state;
+  if (!areaCode) return { status: 'loading' };
+  if (query.isError) {
+    const err = query.error;
+    if (axios.isAxiosError(err) && err.response?.status === 404) {
+      return { status: 'empty' };
+    }
+    return { status: 'error' };
+  }
+  if (query.isPending) return { status: 'loading' };
+  if (query.data.kind === 'stale') return { status: 'stale' };
+  return { status: 'success', data: query.data.data };
 };
