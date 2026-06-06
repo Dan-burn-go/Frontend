@@ -50,6 +50,16 @@ const getSeoulHour = (): number => {
   }
 };
 
+// 모듈 스코프로 추출해 select 함수 참조를 렌더 간 안정화한다.
+// 인라인으로 두면 매 렌더마다 새 함수 참조가 생겨 structural sharing이 작동하지 않고,
+// 같은 응답에도 새 객체를 반환해 메모이제이션 효과를 잃는다.
+const selectReport = (data: AireportResponse): Selected => {
+  const reportHour = parseHour(data.populationTime);
+  if (reportHour == null) return { kind: 'success', data };
+  const diff = circularHourDiff(reportHour, getSeoulHour());
+  return diff > HOUR_TOLERANCE ? { kind: 'stale' } : { kind: 'success', data };
+};
+
 export const useAiReport = (areaCode: string | null): State => {
   const query = useQuery<AireportResponse, Error, Selected>({
     queryKey: ['ai-report', areaCode],
@@ -65,15 +75,16 @@ export const useAiReport = (areaCode: string | null): State => {
       if (axios.isAxiosError(err) && err.response?.status === 404) return false;
       return count < 1;
     },
-    select: (data) => {
-      const reportHour = parseHour(data.populationTime);
-      if (reportHour == null) return { kind: 'success', data };
-      const diff = circularHourDiff(reportHour, getSeoulHour());
-      return diff > HOUR_TOLERANCE ? { kind: 'stale' } : { kind: 'success', data };
-    },
+    select: selectReport,
   });
 
   if (!areaCode) return { status: 'loading' };
+  // SWR 정합: 캐시된 데이터가 있으면 우선 표시. 배경 refetch가 일시적으로 실패해도
+  // 직전에 성공한 결과를 유지하고, error/empty 분기는 처음부터 데이터가 없을 때만 적용.
+  if (query.data) {
+    if (query.data.kind === 'stale') return { status: 'stale' };
+    return { status: 'success', data: query.data.data };
+  }
   if (query.isError) {
     const err = query.error;
     if (axios.isAxiosError(err) && err.response?.status === 404) {
@@ -81,7 +92,5 @@ export const useAiReport = (areaCode: string | null): State => {
     }
     return { status: 'error' };
   }
-  if (query.isPending) return { status: 'loading' };
-  if (query.data.kind === 'stale') return { status: 'stale' };
-  return { status: 'success', data: query.data.data };
+  return { status: 'loading' };
 };
