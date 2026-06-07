@@ -79,3 +79,21 @@ export interface AireportResponse {
   analysisMessage: string;
   populationTime: string;
 }
+
+// 시간대별·요일별 평균 추이 응답 (시간별: key=0~23 / 요일별: key=1=일~7=토)
+export interface CongestionTrendPoint {
+  key: number;
+  label: string;
+  congestionLevel: string; // 한국어 dominant level
+  avgMinPeople: number;
+  avgMaxPeople: number;
+  dataCount: number;
+}
+
+export interface CongestionTrendResponse {
+  areaCode: string;
+  areaName: string;
+  data: CongestionTrendPoint[];
+}
+
+export type CongestionTrendKind = 'hourly' | 'daily';
