@@ -4,6 +4,7 @@ import type {
   AireportResponse,
   CongestionData,
   CongestionRankingResponse,
+  CongestionTrendResponse,
 } from '../types/congestion';
 
 export const fetchAllCongestion = async (): Promise<CongestionData[]> => {
@@ -45,6 +46,30 @@ export const fetchAiReport = async (
   const res = await instance.get<ApiResponse<AireportResponse>>(
     `/api/congestion/${areaCode}/ai-report`,
     { signal },
+  );
+  return res.data.data;
+};
+
+export const fetchHourlyTrend = async (
+  areaCode: string,
+  days = 7,
+  signal?: AbortSignal,
+): Promise<CongestionTrendResponse> => {
+  const res = await instance.get<ApiResponse<CongestionTrendResponse>>(
+    `/api/congestion/analysis/hourly/${areaCode}`,
+    { params: { days }, signal },
+  );
+  return res.data.data;
+};
+
+export const fetchDailyTrend = async (
+  areaCode: string,
+  days = 7,
+  signal?: AbortSignal,
+): Promise<CongestionTrendResponse> => {
+  const res = await instance.get<ApiResponse<CongestionTrendResponse>>(
+    `/api/congestion/analysis/daily/${areaCode}`,
+    { params: { days }, signal },
   );
   return res.data.data;
 };
