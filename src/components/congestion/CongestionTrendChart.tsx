@@ -70,19 +70,50 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   );
 };
 
+// Recharts 3.x에서 Cell이 deprecated되어 v4에서 제거 예정. 공식 권장 패턴인 shape
+// prop으로 막대마다 색상·불투명도·둥근 모서리를 직접 그려 v4 호환을 확보한다.
+const renderBarShape =
+  (highlightKey: number | null) =>
+  (props: unknown) => {
+    const p = props as {
+      x?: number;
+      y?: number;
+      width?: number;
+      height?: number;
+      payload?: CongestionTrendPoint;
+    };
+    if (
+      p.x === undefined ||
+      p.y === undefined ||
+      p.width === undefined ||
+      p.height === undefined ||
+      !p.payload
+    ) {
+      return <g />;
+    }
+    const fill = getColor(p.payload.congestionLevel);
+    const fillOpacity =
+      highlightKey === null ? 1 : p.payload.key === highlightKey ? 1 : 0.5;
+    // 위쪽 모서리만 둥글게(radius 4). height가 작은 경우 모서리 반경 보정.
+    const r = Math.max(0, Math.min(4, p.height, p.width / 2));
+    const path = `M ${p.x},${p.y + r} Q ${p.x},${p.y} ${p.x + r},${p.y} L ${p.x + p.width - r},${p.y} Q ${p.x + p.width},${p.y} ${p.x + p.width},${p.y + r} L ${p.x + p.width},${p.y + p.height} L ${p.x},${p.y + p.height} Z`;
+    return <path d={path} fill={fill} fillOpacity={fillOpacity} />;
+  };
+
 // 현재 시각/요일 막대 위에 "지금" 라벨과 작은 dot을 띄워 검은 stroke 없이 강조.
-// recharts label content로 막대마다 호출되며, 현재 키와 일치할 때만 렌더.
+// recharts label content로 막대마다 호출되며, 데이터 포인트의 key와 일치할 때만 렌더.
+// (Bar의 dataKey 값인 avgMaxPeople이 아니라 payload.key를 비교해야 정확)
 const renderNowMarker = (highlightKey: number | null) => (props: unknown) => {
   if (highlightKey === null) return null;
   const p = props as {
     x?: number | string;
     y?: number | string;
     width?: number | string;
-    value?: number;
+    payload?: { key?: number };
   };
   if (
-    p.value === undefined ||
-    p.value !== highlightKey ||
+    p.payload?.key === undefined ||
+    p.payload.key !== highlightKey ||
     p.x === undefined ||
     p.y === undefined ||
     p.width === undefined
@@ -120,18 +151,6 @@ const CongestionTrendChart = ({ data, kind, highlightKey = null }: Props) => {
     });
   }, [data, kind]);
 
-  // 데이터 객체에 fill·fillOpacity를 포함하면 Bar가 자동으로 각 막대에 적용한다.
-  // Recharts 3.x에서 children Cell이 deprecated되어 이 방식이 권장 패턴.
-  const styledData = useMemo(
-    () =>
-      orderedData.map((point) => ({
-        ...point,
-        fill: getColor(point.congestionLevel),
-        fillOpacity:
-          highlightKey === null ? 1 : point.key === highlightKey ? 1 : 0.5,
-      })),
-    [orderedData, highlightKey],
-  );
 
   return (
     <div
@@ -144,7 +163,7 @@ const CongestionTrendChart = ({ data, kind, highlightKey = null }: Props) => {
       }
     >
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={styledData} margin={{ top: 28, right: 12, left: 0, bottom: 8 }}>
+        <BarChart data={orderedData} margin={{ top: 28, right: 12, left: 0, bottom: 8 }}>
           <XAxis
             dataKey="label"
             tick={{ fontSize: 12, fill: '#6b7280' }}
@@ -160,7 +179,7 @@ const CongestionTrendChart = ({ data, kind, highlightKey = null }: Props) => {
           <Tooltip content={<CustomTooltip />} cursor={false} />
           <Bar
             dataKey="avgMaxPeople"
-            radius={[4, 4, 0, 0]}
+            shape={renderBarShape(highlightKey)}
             label={renderNowMarker(highlightKey)}
           />
         </BarChart>
