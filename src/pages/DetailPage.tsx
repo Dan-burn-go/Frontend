@@ -7,6 +7,7 @@ import AiInsightCard from '../components/detail/AiInsightCard';
 import CultureEventsSection from '../components/detail/CultureEventsSection';
 import LocationSection from '../components/detail/LocationSection';
 import AlternativePlacesSidebar from '../components/detail/AlternativePlacesSidebar';
+import CongestionTrendSection from '../components/detail/CongestionTrendSection';
 import { fetchCongestionByAreaCode } from '../api/congestionApi';
 import { LOCATION_MAP } from '../data/locations';
 import { CONGESTION_COLORS, CONGESTION_LEVEL_MAP } from '../types/congestion';
@@ -85,6 +86,8 @@ const DetailPage = () => {
                 congestionMessage={congestionMessage}
               />
             )}
+
+            {placeInfo && placeId && <CongestionTrendSection areaCode={placeId} />}
 
             {placeInfo && placeId && <AiInsightCard areaCode={placeId} />}
 
