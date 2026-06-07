@@ -7,43 +7,18 @@ interface Props {
   areaCode: string;
 }
 
-// 백엔드의 DAYOFWEEK는 1=일, 7=토. JavaScript toLocaleString('en-US', weekday:'short')의
-// 영문 약어를 매핑해 KST 기준 현재 요일 key를 얻는다.
-const DAY_SHORT_TO_KEY: Record<string, number> = {
-  Sun: 1,
-  Mon: 2,
-  Tue: 3,
-  Wed: 4,
-  Thu: 5,
-  Fri: 6,
-  Sat: 7,
-};
+// KST는 UTC+9 고정(DST 없음)이라 timestamp에 직접 offset을 더해 Date 객체를 만들고
+// getUTC* 메서드로 시간/요일을 읽는다. Intl/toLocaleString의 환경 의존 포맷(예:
+// 자정을 '24'로 반환, 요일이 'Sun.'처럼 마침표 포함) 문제를 피하는 안전한 방식.
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
-const getSeoulHour = (): number => {
-  try {
-    return Number(
-      new Intl.DateTimeFormat('en-US', {
-        timeZone: 'Asia/Seoul',
-        hour: 'numeric',
-        hour12: false,
-      }).format(new Date()),
-    );
-  } catch {
-    return new Date().getHours();
-  }
-};
+const kstNow = (): Date => new Date(Date.now() + KST_OFFSET_MS);
 
-const getSeoulDayOfWeekKey = (): number => {
-  try {
-    const short = new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Seoul',
-      weekday: 'short',
-    });
-    return DAY_SHORT_TO_KEY[short] ?? 1;
-  } catch {
-    return new Date().getDay() + 1;
-  }
-};
+const getSeoulHour = (): number => kstNow().getUTCHours();
+
+// JavaScript getUTCDay(): 0=일, 1=월, ..., 6=토
+// 백엔드 DAYOFWEEK: 1=일, 2=월, ..., 7=토 → +1 매핑
+const getSeoulDayOfWeekKey = (): number => kstNow().getUTCDay() + 1;
 
 const TICK_INTERVAL = 60 * 1000; // 1분
 
