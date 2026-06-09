@@ -167,6 +167,7 @@ const RankingBottomSheet = ({ busiest, relaxed, loading, error }: Props) => {
         role="dialog"
         aria-label="혼잡도 랭킹"
         aria-hidden={!open}
+        inert={!open}
         {...touchHandlers}
         className={`fixed inset-x-0 bottom-0 z-20 bg-white rounded-t-[28px] shadow-[0_-8px_32px_rgba(15,23,42,0.1)] ring-1 ring-slate-900/5 touch-none ${
           dragging ? '' : 'transition-transform duration-300 ease-out'

@@ -33,8 +33,16 @@ export const useSwipeDown = ({
     setDragY(value);
   };
 
+  const resetGesture = () => {
+    updateDragY(0);
+    startYRef.current = null;
+    activatedRef.current = false;
+  };
+
   const touchHandlers = {
     onTouchStart: (e: React.TouchEvent) => {
+      // 멀티터치이거나 이미 한 손가락을 추적 중이면 시작점이 덮어써져 시트가 튀는 것 방지.
+      if (e.touches.length > 1 || startYRef.current != null) return;
       // 인터랙티브 자식 위에서 시작한 터치는 무시 — 버튼 탭 의도를 드래그로 오인하지 않기 위해.
       const target = e.target as Element | null;
       if (target && target.closest(INTERACTIVE_SELECTOR)) return;
@@ -59,9 +67,12 @@ export const useSwipeDown = ({
       const isTap = !activatedRef.current && movement < TAP_SLOP;
       const passedThreshold = movement > threshold;
       if ((dismissOnTap && isTap) || passedThreshold) onDismiss();
-      updateDragY(0);
-      startYRef.current = null;
-      activatedRef.current = false;
+      resetGesture();
+    },
+    // 시스템 제스처(엣지 스와이프)나 알림 등으로 터치가 취소되면 시트가 끌린 채 멈추지 않도록 상태 리셋.
+    onTouchCancel: () => {
+      if (startYRef.current == null) return;
+      resetGesture();
     },
   };
 
