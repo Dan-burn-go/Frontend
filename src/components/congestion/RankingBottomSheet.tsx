@@ -179,6 +179,7 @@ const RankingBottomSheet = ({ busiest, relaxed, loading, error }: Props) => {
           type="button"
           onClick={() => setOpen(false)}
           aria-label="시트 닫기"
+          data-swipe-allow
           className="cursor-pointer w-full flex justify-center pt-3 pb-2"
         >
           <div className="w-9 h-1 bg-slate-200 rounded-full" />
