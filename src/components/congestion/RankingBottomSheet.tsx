@@ -120,7 +120,10 @@ const Section = ({
 const RankingBottomSheet = ({ busiest, relaxed, loading, error }: Props) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { dragY, touchHandlers } = useSwipeDown({ onDismiss: () => setOpen(false) });
+  const { dragY, touchHandlers } = useSwipeDown({
+    onDismiss: () => setOpen(false),
+    dismissOnTap: false,
+  });
 
   // 시트가 열려있을 때만 Escape 키 리스너 — 닫혔을 때는 등록도 안 해 불필요한 비용 회피.
   useEffect(() => {
@@ -164,7 +167,9 @@ const RankingBottomSheet = ({ busiest, relaxed, loading, error }: Props) => {
         role="dialog"
         aria-label="혼잡도 랭킹"
         aria-hidden={!open}
-        className={`fixed inset-x-0 bottom-0 z-20 bg-white rounded-t-[28px] shadow-[0_-8px_32px_rgba(15,23,42,0.1)] ring-1 ring-slate-900/5 ${
+        inert={!open}
+        {...touchHandlers}
+        className={`fixed inset-x-0 bottom-0 z-20 bg-white rounded-t-[28px] shadow-[0_-8px_32px_rgba(15,23,42,0.1)] ring-1 ring-slate-900/5 touch-none ${
           dragging ? '' : 'transition-transform duration-300 ease-out'
         }`}
         style={{
@@ -173,15 +178,10 @@ const RankingBottomSheet = ({ busiest, relaxed, loading, error }: Props) => {
       >
         <button
           type="button"
-          {...touchHandlers}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setOpen(false);
-            }
-          }}
+          onClick={() => setOpen(false)}
           aria-label="시트 닫기"
-          className="cursor-pointer w-full flex justify-center pt-3 pb-2 touch-none"
+          data-swipe-allow
+          className="cursor-pointer w-full flex justify-center pt-3 pb-2"
         >
           <div className="w-9 h-1 bg-slate-200 rounded-full" />
         </button>
