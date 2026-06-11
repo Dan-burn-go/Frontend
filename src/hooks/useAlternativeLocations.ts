@@ -8,14 +8,14 @@ import type { AlternativeLocation } from '../types/map';
 // 응답 스키마 보강(populationTime 추가)은 별도 백엔드 이슈로 분리.
 const POLL_INTERVAL = 5 * 60 * 1000;
 
-type State =
+export type AlternativeLocationsState =
   | { status: 'loading' }
   | { status: 'success'; data: AlternativeLocation[] } // 보장: data.length > 0
   | { status: 'empty' } // 추천 결과 없음 (빈 배열)
   | { status: 'error' };
 
 export const useAlternativeLocations = (areaCode: string | null) => {
-  const [state, setState] = useState<State>({ status: 'loading' });
+  const [state, setState] = useState<AlternativeLocationsState>({ status: 'loading' });
   const hasLoadedRef = useRef<boolean>(false);
 
   useEffect(() => {

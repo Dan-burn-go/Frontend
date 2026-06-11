@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { CaretRightIcon } from '@phosphor-icons/react';
-import { useAlternativeLocations } from '../../hooks/useAlternativeLocations';
+import type { AlternativeLocationsState } from '../../hooks/useAlternativeLocations';
 import { LOCATION_MAP } from '../../data/locations';
 import { CATEGORY_NAMES } from '../../data/categories';
 import { CONGESTION_COLORS, CONGESTION_LABELS, CONGESTION_LEVEL_MAP } from '../../types/congestion';
@@ -8,7 +8,7 @@ import type { AlternativeLocation } from '../../types/map';
 import SectionHeader from './SectionHeader';
 
 interface Props {
-  areaCode: string;
+  state: AlternativeLocationsState;
 }
 
 const Header = () => (
@@ -64,9 +64,8 @@ const Item = ({
   );
 };
 
-const AlternativePlacesSidebar = ({ areaCode }: Props) => {
+const AlternativePlacesSidebar = ({ state }: Props) => {
   const navigate = useNavigate();
-  const state = useAlternativeLocations(areaCode);
 
   return (
     <aside className="lg:w-72 shrink-0">
