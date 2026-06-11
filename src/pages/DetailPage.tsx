@@ -89,7 +89,9 @@ const DetailPage = () => {
 
             {placeInfo && placeId && <CongestionTrendSection areaCode={placeId} />}
 
-            {placeInfo && placeId && <AiInsightCard areaCode={placeId} />}
+            {placeInfo && placeId && congestionLevel === 'CROWDED' && (
+              <AiInsightCard areaCode={placeId} />
+            )}
 
             {placeInfo && (
               <CultureEventsSection
