@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Bell, Menu, X } from 'lucide-react';
+import { MapPin, Menu, X } from 'lucide-react';
 import HomeSearch from './HomeSearch';
 
 const NAV_LINKS = [
@@ -47,11 +47,6 @@ const Header = ({ onSearchSelect }: HeaderProps) => {
         <div className="flex items-center gap-2 sm:gap-4">
           {/* 검색 (데스크탑) — onSearchSelect 받는 페이지에서만 노출 */}
           {onSearchSelect && <HomeSearch onSelect={onSearchSelect} />}
-
-          {/* 아이콘 (데스크탑) */}
-          <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <Bell className="size-5 text-gray-600" />
-          </button>
 
           {/* 햄버거 (모바일) */}
           <button
