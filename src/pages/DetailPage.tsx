@@ -8,6 +8,7 @@ import CultureEventsSection from '../components/detail/CultureEventsSection';
 import LocationSection from '../components/detail/LocationSection';
 import AlternativePlacesSidebar from '../components/detail/AlternativePlacesSidebar';
 import CongestionTrendSection from '../components/detail/CongestionTrendSection';
+import { useAlternativeLocations } from '../hooks/useAlternativeLocations';
 import { fetchCongestionByAreaCode } from '../api/congestionApi';
 import { LOCATION_MAP } from '../data/locations';
 import { CONGESTION_COLORS, CONGESTION_LEVEL_MAP } from '../types/congestion';
@@ -49,6 +50,9 @@ const DetailPage = () => {
 
   const isUnavailable = !loading && ((!marker && !data) || !placeInfo);
   const isReady = !loading && (marker || data) && placeInfo && congestionLevel;
+  const isCongested = congestionLevel === 'BUSY' || congestionLevel === 'CROWDED';
+  const showAlternatives = !!placeId && !!congestionLevel && congestionLevel !== 'QUIET';
+  const alternativesState = useAlternativeLocations(showAlternatives ? placeId : null);
 
   return (
     <div className="flex flex-col w-full min-h-dvh bg-slate-50">
@@ -93,6 +97,12 @@ const DetailPage = () => {
               <AiInsightCard areaCode={placeId} />
             )}
 
+            {placeInfo && showAlternatives && isCongested && (
+              <div className="lg:hidden">
+                <AlternativePlacesSidebar state={alternativesState} />
+              </div>
+            )}
+
             {placeInfo && (
               <CultureEventsSection
                 latitude={placeInfo.latitude}
@@ -109,8 +119,10 @@ const DetailPage = () => {
             )}
           </div>
 
-          {placeInfo && placeId && congestionLevel !== 'QUIET' && (
-            <AlternativePlacesSidebar areaCode={placeId} />
+          {placeInfo && showAlternatives && (
+            <div className={isCongested ? 'hidden lg:block' : ''}>
+              <AlternativePlacesSidebar state={alternativesState} />
+            </div>
           )}
         </div>
       </div>
