@@ -51,7 +51,7 @@ const DetailPage = () => {
   const isUnavailable = !loading && ((!marker && !data) || !placeInfo);
   const isReady = !loading && (marker || data) && placeInfo && congestionLevel;
   const isCongested = congestionLevel === 'BUSY' || congestionLevel === 'CROWDED';
-  const showAlternatives = !!placeId && !!congestionLevel && congestionLevel !== 'QUIET';
+  const showAlternatives = !!placeId && congestionLevel !== 'QUIET';
   const alternativesState = useAlternativeLocations(showAlternatives ? placeId : null);
 
   return (
@@ -120,7 +120,7 @@ const DetailPage = () => {
           </div>
 
           {placeInfo && showAlternatives && (
-            <div className={isCongested ? 'hidden lg:block' : ''}>
+            <div className={isCongested || loading ? 'hidden lg:block' : ''}>
               <AlternativePlacesSidebar state={alternativesState} />
             </div>
           )}
